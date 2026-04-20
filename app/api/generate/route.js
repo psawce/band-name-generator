@@ -9,7 +9,7 @@ export async function POST() {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-3-5-haiku-20241022",
+        model: "claude-3-haiku-20240307",
         max_tokens: 100,
         system: "You generate creative band names. Respond with ONLY the band name.",
         messages: [{ role: "user", content: "Give me a band name." }],
