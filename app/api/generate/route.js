@@ -21,7 +21,7 @@ export async function POST() {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 100,
       system:
         "You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Never repeat a name you have given before.",
