@@ -1,4 +1,18 @@
 export async function POST() {
+  const styles = [
+    "poetic and abstract",
+    "dark and mysterious",
+    "funny and absurd",
+    "punchy and aggressive",
+    "dreamy and ethereal",
+    "political and provocative",
+    "nature-inspired",
+    "sci-fi and futuristic",
+    "nostalgic and romantic",
+    "weird and surreal",
+  ];
+  const style = styles[Math.floor(Math.random() * styles.length)];
+
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -10,8 +24,8 @@ export async function POST() {
       model: "claude-sonnet-4-20250514",
       max_tokens: 100,
       system:
-        "You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Each name should be unique, evocative, and interesting. Vary styles: poetic, mysterious, funny, punchy, absurd, etc.",
-      messages: [{ role: "user", content: "Give me a new band name." }],
+        "You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Never repeat a name you have given before.",
+      messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
     }),
   });
 
