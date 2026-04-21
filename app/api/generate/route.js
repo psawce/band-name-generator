@@ -1,8 +1,11 @@
-// v3
+// v4
 const recentNames = [];
+let generateCount = 0;
 
 export async function POST() {
   try {
+    generateCount++;
+
     const styles = [
       "poetic and abstract",
       "dark and mysterious",
@@ -31,6 +34,16 @@ export async function POST() {
       ? `Do NOT repeat any of these recent names: ${recentNames.slice(-20).join(", ")}.`
       : "";
 
+    const isOneWord = generateCount % 7 === 0;
+    const startWithThe = generateCount % 8 === 0;
+
+    let structureClause = "";
+    if (isOneWord) {
+      structureClause = "The name MUST be exactly ONE word — no spaces, no articles.";
+    } else if (startWithThe) {
+      structureClause = 'The name MUST begin with the word "The".';
+    }
+
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -41,7 +54,7 @@ export async function POST() {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 100,
-        system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Be highly varied in your vocabulary and structure. ${avoidClause} ${recentClause}`,
+        system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Be highly varied in your vocabulary and structure. ${structureClause} ${avoidClause} ${recentClause}`,
         messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
       }),
     });
