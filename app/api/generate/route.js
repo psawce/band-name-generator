@@ -1,4 +1,4 @@
-// v4
+// v5
 const recentNames = [];
 let generateCount = 0;
 
@@ -35,37 +35,59 @@ export async function POST() {
       : "";
 
     const isOneWord = generateCount % 7 === 0;
-    const startWithThe = generateCount % 8 === 0;
+    const startWithThe = !isOneWord && generateCount % 8 === 0;
 
     let structureClause = "";
     if (isOneWord) {
-      structureClause = "The name MUST be exactly ONE word — no spaces, no articles.";
+      structureClause = "The name MUST be exactly ONE single word with no spaces.";
     } else if (startWithThe) {
       structureClause = 'The name MUST begin with the word "The".';
     }
 
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 100,
-        system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Be highly varied in your vocabulary and structure. ${structureClause} ${avoidClause} ${recentClause}`,
-        messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
-      }),
-    });
+    let name = null;
+    let attempts = 0;
 
-    const raw = await res.text();
-    if (!res.ok) {
-      return new Response(JSON.stringify({ error: raw }), { status: 500 });
+    while (attempts < 5) {
+      attempts++;
+
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 100,
+          system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Be highly varied in your vocabulary and structure. ${structureClause} ${avoidClause} ${recentClause}`,
+          messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
+        }),
+      });
+
+      const raw = await res.text();
+      if (!res.ok) {
+        return new Response(JSON.stringify({ error: raw }), { status: 500 });
+      }
+
+      const data = JSON.parse(raw);
+      const candidate = data.content?.[0]?.text?.trim() || "The Unnamed";
+
+      if (isOneWord && candidate.includes(" ")) {
+        continue;
+      }
+
+      if (startWithThe && !candidate.toLowerCase().startsWith("the ")) {
+        continue;
+      }
+
+      name = candidate;
+      break;
     }
 
-    const data = JSON.parse(raw);
-    const name = data.content?.[0]?.text?.trim() || "The Unnamed";
+    if (!name) {
+      name = isOneWord ? "Eclipse" : "The Unnamed";
+    }
 
     recentNames.push(name);
     if (recentNames.length > 40) recentNames.shift();
