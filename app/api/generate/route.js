@@ -1,4 +1,3 @@
-// v9
 const recentNames = [];
 
 export async function POST(request) {
@@ -27,17 +26,16 @@ export async function POST(request) {
 
     const avoidWords = getOverusedWords(recentNames, 40, 2);
     const avoidClause = avoidWords.length > 0
-      ? `Do NOT use any of these overused words: ${avoidWords.join(", ")}.`
+      ? "Do NOT use any of these overused words: " + avoidWords.join(", ") + "."
       : "";
     const recentClause = recentNames.length > 0
-      ? `Do NOT repeat any of these recent names: ${recentNames.slice(-20).join(", ")}.`
+      ? "Do NOT repeat any of these recent names: " + recentNames.slice(-20).join(", ") + "."
       : "";
 
-    // Determine structure rules based on count
-    const positionInTen = count % 10; // 0-9 repeating
     const isOneWord = count % 7 === 0;
     const startWithThe = !isOneWord && count % 8 === 0;
-    const isShort = positionInTen >= 1 && positionInTen <= 7; // positions 1-7 = 7 out of 10
+    const positionInTen = count % 10;
+    const isShort = !isOneWord && !startWithThe && positionInTen >= 1 && positionInTen <= 7;
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -49,8 +47,8 @@ export async function POST(request) {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 100,
-        system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. ${avoidClause} ${recentClause}`,
-        messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
+        system: "You generate creative, original band names. Respond with ONLY the band name, no quotes, no explanation, no punctuation at the end. " + avoidClause + " " + recentClause,
+        messages: [{ role: "user", content: "Give me a " + style + " band name. Make it unique and unexpected." }],
       }),
     });
 
@@ -58,9 +56,28 @@ export async function POST(request) {
     if (!res.ok) return new Response(JSON.stringify({ error: raw }), { status: 500 });
 
     const data = JSON.parse(raw);
-    let name = data.content?.[0]?.text?.trim() || "Eclipse";
+    let name = data.content[0].text.trim();
 
-    // Split into words
-    let words = name.split(/\s+/).filter(w => w.length > 0);
+    let words = name.split(/\s+/).filter(function(w) { return w.length > 0; });
 
-    // Rule 1: Every
+    if (isOneWord) {
+      words = [words[0]];
+    } else if (startWithThe) {
+      if (words[0].toLowerCase() === "the") {
+        words = words.slice(0, 2);
+      } else {
+        words = ["The", words[0]];
+      }
+    } else if (isShort) {
+      words = words.slice(0, 2);
+    }
+
+    name = words.join(" ");
+
+    recentNames.push(name);
+    if (recentNames.length > 40) recentNames.shift();
+
+    return new Response(JSON.stringify({ name: name }), { status: 200 });
+
+  } catch (err) {
+    return new Response(JSON.stringify({
