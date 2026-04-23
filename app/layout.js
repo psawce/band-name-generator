@@ -1,6 +1,3 @@
-// v2
-export const metadata = { title: "Band Name Generator" };
-
 export const metadata = { title: "Band Name Generator" };
 
 export default function RootLayout({ children }) {
