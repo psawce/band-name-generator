@@ -22,15 +22,11 @@ export async function POST(request) {
       "color or texture inspired",
       "emotion or feeling inspired",
     ];
-    const style = styles[Math.floor(Math.random() * styles.length)];
 
+    const style = styles[Math.floor(Math.random() * styles.length)];
     const avoidWords = getOverusedWords(recentNames, 40, 2);
-    const avoidClause = avoidWords.length > 0
-      ? "Do NOT use any of these overused words: " + avoidWords.join(", ") + "."
-      : "";
-    const recentClause = recentNames.length > 0
-      ? "Do NOT repeat any of these recent names: " + recentNames.slice(-20).join(", ") + "."
-      : "";
+    const avoidClause = avoidWords.length > 0 ? "Do NOT use any of these overused words: " + avoidWords.join(", ") + "." : "";
+    const recentClause = recentNames.length > 0 ? "Do NOT repeat any of these recent names: " + recentNames.slice(-20).join(", ") + "." : "";
 
     const isOneWord = count % 7 === 0;
     const startWithThe = !isOneWord && count % 8 === 0;
@@ -57,7 +53,6 @@ export async function POST(request) {
 
     const data = JSON.parse(raw);
     let name = data.content[0].text.trim();
-
     let words = name.split(/\s+/).filter(function(w) { return w.length > 0; });
 
     if (isOneWord) {
@@ -73,11 +68,26 @@ export async function POST(request) {
     }
 
     name = words.join(" ");
-
     recentNames.push(name);
     if (recentNames.length > 40) recentNames.shift();
 
     return new Response(JSON.stringify({ name: name }), { status: 200 });
 
   } catch (err) {
-    return new Response(JSON.stringify({
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+  }
+}
+
+function getOverusedWords(names, windowSize, maxCount) {
+  var recent = names.slice(-windowSize);
+  var wordCount = {};
+  for (var i = 0; i < recent.length; i++) {
+    var words = recent[i].toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/);
+    for (var j = 0; j < words.length; j++) {
+      if (words[j].length > 2) {
+        wordCount[words[j]] = (wordCount[words[j]] || 0) + 1;
+      }
+    }
+  }
+  return Object.keys(wordCount).filter(function(w) { return wordCount[w] > maxCount; });
+}
