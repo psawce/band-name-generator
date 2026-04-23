@@ -1,4 +1,4 @@
-"use client"; // v2
+"use client"; // v3
 import { useState } from "react";
 
 const PLATFORMS = [
