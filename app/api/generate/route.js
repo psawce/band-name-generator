@@ -1,4 +1,4 @@
-// v6
+// v7
 const recentNames = [];
 
 export async function POST(request) {
@@ -38,45 +38,42 @@ export async function POST(request) {
 
     let structureClause = "";
     if (isOneWord) {
-      structureClause = "The name MUST be exactly ONE single word with no spaces.";
+      structureClause = "The name should be a single evocative word.";
     } else if (startWithThe) {
       structureClause = 'The name MUST begin with the word "The".';
     }
 
-    let name = null;
-    let attempts = 0;
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 100,
+        system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Be highly varied in your vocabulary and structure. ${structureClause} ${avoidClause} ${recentClause}`,
+        messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
+      }),
+    });
 
-    while (attempts < 5) {
-      attempts++;
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: "claude-haiku-4-5-20251001",
-          max_tokens: 100,
-          system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. Be highly varied in your vocabulary and structure. ${structureClause} ${avoidClause} ${recentClause}`,
-          messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
-        }),
-      });
+    const raw = await res.text();
+    if (!res.ok) return new Response(JSON.stringify({ error: raw }), { status: 500 });
 
-      const raw = await res.text();
-      if (!res.ok) return new Response(JSON.stringify({ error: raw }), { status: 500 });
+    const data = JSON.parse(raw);
+    let name = data.content?.[0]?.text?.trim() || "Eclipse";
 
-      const data = JSON.parse(raw);
-      const candidate = data.content?.[0]?.text?.trim() || "";
-
-      if (isOneWord && candidate.includes(" ")) continue;
-      if (startWithThe && !candidate.toLowerCase().startsWith("the ")) continue;
-
-      name = candidate;
-      break;
+    // Enforce single word by taking only the first word
+    if (isOneWord) {
+      name = name.split(/\s+/)[0].replace(/[^a-zA-Z0-9]/g, "");
+      if (!name) name = "Eclipse";
     }
 
-    if (!name) name = isOneWord ? "Eclipse" : "The Unnamed";
+    // Enforce "The" prefix
+    if (startWithThe && !name.toLowerCase().startsWith("the ")) {
+      name = "The " + name;
+    }
 
     recentNames.push(name);
     if (recentNames.length > 40) recentNames.shift();
