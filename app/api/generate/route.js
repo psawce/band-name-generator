@@ -1,10 +1,10 @@
-// v5
+// v6
 const recentNames = [];
-let generateCount = 0;
 
-export async function POST() {
+export async function POST(request) {
   try {
-    generateCount++;
+    const body = await request.json();
+    const count = body.count || 1;
 
     const styles = [
       "poetic and abstract",
@@ -29,13 +29,12 @@ export async function POST() {
     const avoidClause = avoidWords.length > 0
       ? `Do NOT use any of these overused words: ${avoidWords.join(", ")}.`
       : "";
-
     const recentClause = recentNames.length > 0
       ? `Do NOT repeat any of these recent names: ${recentNames.slice(-20).join(", ")}.`
       : "";
 
-    const isOneWord = generateCount % 7 === 0;
-    const startWithThe = !isOneWord && generateCount % 8 === 0;
+    const isOneWord = count % 7 === 0;
+    const startWithThe = !isOneWord && count % 8 === 0;
 
     let structureClause = "";
     if (isOneWord) {
@@ -49,7 +48,6 @@ export async function POST() {
 
     while (attempts < 5) {
       attempts++;
-
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
@@ -66,28 +64,19 @@ export async function POST() {
       });
 
       const raw = await res.text();
-      if (!res.ok) {
-        return new Response(JSON.stringify({ error: raw }), { status: 500 });
-      }
+      if (!res.ok) return new Response(JSON.stringify({ error: raw }), { status: 500 });
 
       const data = JSON.parse(raw);
-      const candidate = data.content?.[0]?.text?.trim() || "The Unnamed";
+      const candidate = data.content?.[0]?.text?.trim() || "";
 
-      if (isOneWord && candidate.includes(" ")) {
-        continue;
-      }
-
-      if (startWithThe && !candidate.toLowerCase().startsWith("the ")) {
-        continue;
-      }
+      if (isOneWord && candidate.includes(" ")) continue;
+      if (startWithThe && !candidate.toLowerCase().startsWith("the ")) continue;
 
       name = candidate;
       break;
     }
 
-    if (!name) {
-      name = isOneWord ? "Eclipse" : "The Unnamed";
-    }
+    if (!name) name = isOneWord ? "Eclipse" : "The Unnamed";
 
     recentNames.push(name);
     if (recentNames.length > 40) recentNames.shift();
@@ -105,9 +94,7 @@ function getOverusedWords(names, window, maxCount) {
   for (const name of recent) {
     const words = name.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/);
     for (const word of words) {
-      if (word.length > 2) {
-        wordCount[word] = (wordCount[word] || 0) + 1;
-      }
+      if (word.length > 2) wordCount[word] = (wordCount[word] || 0) + 1;
     }
   }
   return Object.entries(wordCount)
