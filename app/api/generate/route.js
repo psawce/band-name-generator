@@ -1,4 +1,4 @@
-// v8
+// v9
 const recentNames = [];
 
 export async function POST(request) {
@@ -25,4 +25,42 @@ export async function POST(request) {
     ];
     const style = styles[Math.floor(Math.random() * styles.length)];
 
-    const avoidWords =
+    const avoidWords = getOverusedWords(recentNames, 40, 2);
+    const avoidClause = avoidWords.length > 0
+      ? `Do NOT use any of these overused words: ${avoidWords.join(", ")}.`
+      : "";
+    const recentClause = recentNames.length > 0
+      ? `Do NOT repeat any of these recent names: ${recentNames.slice(-20).join(", ")}.`
+      : "";
+
+    // Determine structure rules based on count
+    const positionInTen = count % 10; // 0-9 repeating
+    const isOneWord = count % 7 === 0;
+    const startWithThe = !isOneWord && count % 8 === 0;
+    const isShort = positionInTen >= 1 && positionInTen <= 7; // positions 1-7 = 7 out of 10
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 100,
+        system: `You generate creative, original band names. Respond with ONLY the band name — no quotes, no explanation, no punctuation at the end. ${avoidClause} ${recentClause}`,
+        messages: [{ role: "user", content: `Give me a ${style} band name. Make it unique and unexpected.` }],
+      }),
+    });
+
+    const raw = await res.text();
+    if (!res.ok) return new Response(JSON.stringify({ error: raw }), { status: 500 });
+
+    const data = JSON.parse(raw);
+    let name = data.content?.[0]?.text?.trim() || "Eclipse";
+
+    // Split into words
+    let words = name.split(/\s+/).filter(w => w.length > 0);
+
+    // Rule 1: Every
