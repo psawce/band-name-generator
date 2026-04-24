@@ -14,12 +14,12 @@ const s = {
   header: { textAlign: "center", marginBottom: "2.5rem" },
   h1: { fontSize: "2rem", fontWeight: 500, color: "#005dff", marginBottom: 8 },
   subtitle: { fontSize: "1rem", color: "#999" },
-  card: { border: "1px solid #e8e8e8", borderRadius: 10, minHeight: 140, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.5rem", padding: "2rem" },
+  nameArea: { minHeight: 140, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.5rem", padding: "2rem" },
   bandName: { fontSize: "2rem", fontWeight: 500, color: "#005dff", textAlign: "center", marginBottom: "1.25rem" },
   placeholder: { color: "#ccc", fontSize: "1rem" },
   btnRow: { display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" },
   btnPrimary: { background: "transparent", color: "#005dff", border: "1.5px solid #005dff", borderRadius: 6, padding: "10px 36px", fontSize: "1rem", fontWeight: 500, cursor: "pointer" },
-  btnOutline: { background: "transparent", color: "#aaa", border: "1px solid #ddd", borderRadius: 6, padding: "7px 16px", fontSize: "0.875rem", fontWeight: 400, cursor: "pointer" },
+  btnOutline: { background: "transparent", color: "#005dff", border: "1.5px solid #005dff", borderRadius: 6, padding: "7px 16px", fontSize: "0.875rem", fontWeight: 400, cursor: "pointer" },
   generateWrap: { display: "flex", justifyContent: "center", marginBottom: "2.5rem" },
   dividerWrap: { display: "flex", alignItems: "center", gap: 12, marginBottom: "1.25rem" },
   dividerLine: { flex: 1, height: 1, background: "#eee" },
@@ -105,7 +105,7 @@ export default function App() {
           <p style={s.subtitle}>Find the perfect name for your band</p>
         </div>
 
-        <div style={s.card}>
+        <div style={s.nameArea}>
           {current ? (
             <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease", textAlign: "center", width: "100%" }}>
               <div style={s.bandName}>{current}</div>
