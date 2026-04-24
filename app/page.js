@@ -8,30 +8,33 @@ const PLATFORMS = [
   { name: "WhatsApp", url: (n) => `https://wa.me/?text=${encodeURIComponent(`Check out this band name: "${n}" 🎸`)}` },
 ];
 
+const BLUE = "#005dff";
+
 const s = {
   page: { minHeight: "100vh", background: "#fff", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" },
   wrap: { maxWidth: 560, margin: "0 auto", padding: "3rem 1.5rem" },
   header: { textAlign: "center", marginBottom: "2.5rem" },
-  h1: { fontSize: "2rem", fontWeight: 500, color: "#005dff", marginBottom: 8 },
-  subtitle: { fontSize: "1rem", color: "#999" },
+  h1: { fontSize: "2rem", fontWeight: 500, color: BLUE, marginBottom: 8 },
+  subtitle: { fontSize: "1rem", color: BLUE, opacity: 0.5 },
   nameArea: { minHeight: 140, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.5rem", padding: "2rem" },
-  bandName: { fontSize: "2rem", fontWeight: 500, color: "#005dff", textAlign: "center", marginBottom: "1.25rem" },
-  placeholder: { color: "#ccc", fontSize: "1rem" },
+  bandName: { fontSize: "2rem", fontWeight: 500, color: BLUE, textAlign: "center", marginBottom: "1.25rem" },
+  placeholder: { color: BLUE, opacity: 0.3, fontSize: "1rem" },
   btnRow: { display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" },
-  btnPrimary: { background: "transparent", color: "#005dff", border: "1.5px solid #005dff", borderRadius: 6, padding: "10px 36px", fontSize: "1rem", fontWeight: 500, cursor: "pointer" },
-  btnOutline: { background: "transparent", color: "#005dff", border: "1.5px solid #005dff", borderRadius: 6, padding: "7px 16px", fontSize: "0.875rem", fontWeight: 400, cursor: "pointer" },
+  btnPrimary: { background: "transparent", color: BLUE, border: `1.5px solid ${BLUE}`, borderRadius: 6, padding: "10px 36px", fontSize: "1rem", fontWeight: 500, cursor: "pointer" },
+  btnOutline: { background: "transparent", color: BLUE, border: `1.5px solid ${BLUE}`, borderRadius: 6, padding: "7px 16px", fontSize: "0.875rem", fontWeight: 400, cursor: "pointer" },
   generateWrap: { display: "flex", justifyContent: "center", marginBottom: "2.5rem" },
   dividerWrap: { display: "flex", alignItems: "center", gap: 12, marginBottom: "1.25rem" },
-  dividerLine: { flex: 1, height: 1, background: "#eee" },
-  dividerText: { fontSize: 13, color: "#bbb", whiteSpace: "nowrap" },
-  emptyText: { textAlign: "center", color: "#ccc", padding: "1rem 0", fontSize: "0.95rem" },
-  savedItem: { border: "1px solid #eee", borderRadius: 8, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 },
-  savedName: { fontWeight: 500, color: "#005dff" },
-  toast: { position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "#005dff", color: "#fff", padding: "10px 24px", borderRadius: 8, fontSize: 14, fontWeight: 500, zIndex: 100 },
+  dividerLine: { flex: 1, height: 1, background: BLUE, opacity: 0.15 },
+  dividerText: { fontSize: 13, color: BLUE, opacity: 0.4, whiteSpace: "nowrap" },
+  emptyText: { textAlign: "center", color: BLUE, opacity: 0.3, padding: "1rem 0", fontSize: "0.95rem" },
+  savedItem: { border: `1px solid ${BLUE}`, borderRadius: 8, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 },
+  savedName: { fontWeight: 500, color: BLUE },
+  toast: { position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", background: BLUE, color: "#fff", padding: "10px 24px", borderRadius: 8, fontSize: 14, fontWeight: 500, zIndex: 100 },
   dropdownWrap: { position: "relative", display: "inline-block" },
-  dropdownMenu: { position: "absolute", right: 0, top: "110%", background: "#fff", border: "1px solid #eee", borderRadius: 8, padding: "6px 0", minWidth: 180, zIndex: 50, listStyle: "none", boxShadow: "0 4px 16px rgba(0,0,0,0.08)" },
-  dropdownItem: { display: "block", padding: "8px 16px", fontSize: 14, color: "#1a1a1a", textDecoration: "none", cursor: "pointer", background: "none", border: "none", width: "100%", textAlign: "left" },
-  dropdownDivider: { borderTop: "1px solid #eee", margin: "4px 0" },
+  dropdownMenu: { position: "absolute", right: 0, top: "110%", background: "#fff", border: `1px solid ${BLUE}`, borderRadius: 8, padding: "6px 0", minWidth: 180, zIndex: 50, listStyle: "none", boxShadow: "0 4px 16px rgba(0,93,255,0.10)" },
+  dropdownItem: { display: "block", padding: "8px 16px", fontSize: 14, color: BLUE, textDecoration: "none", cursor: "pointer", background: "none", border: "none", width: "100%", textAlign: "left" },
+  dropdownDivider: { borderTop: `1px solid ${BLUE}`, opacity: 0.15, margin: "4px 0" },
+  removeBtn: { background: "transparent", color: BLUE, border: `1.5px solid ${BLUE}`, borderRadius: 6, padding: "7px 16px", fontSize: "0.875rem", cursor: "pointer", opacity: 0.4 },
 };
 
 function ShareMenu({ name, onCopy }) {
@@ -154,7 +157,7 @@ export default function App() {
                   <span style={s.savedName}>{n}</span>
                   <div style={{ display: "flex", gap: 8 }}>
                     <ShareMenu name={n} onCopy={copyToClipboard} />
-                    <button style={{ ...s.btnOutline, color: "#e74c3c", borderColor: "#fdd" }} onClick={() => setSaved(s => s.filter(x => x !== n))}>Remove</button>
+                    <button style={s.removeBtn} onClick={() => setSaved(s => s.filter(x => x !== n))}>Remove</button>
                   </div>
                 </div>
               ))}
