@@ -12,16 +12,18 @@ button {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: indivisible, sans-serif;
   background: #ffffff;
   color: #005dff;
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: 500;
   color: #005dff;
   margin-bottom: 8px;
+   font-family: fields-display, sans-serif;
+
 }
 
 .page {
