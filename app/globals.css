@@ -17,7 +17,6 @@ h1 {
   margin-bottom: 8px;
 }
 
-/* Layout */
 .page {
   min-height: 100vh;
   background: #ffffff;
@@ -29,7 +28,6 @@ h1 {
   padding: 3rem 1.5rem;
 }
 
-/* Header */
 .header {
   text-align: center;
   margin-bottom: 2.5rem;
@@ -38,10 +36,8 @@ h1 {
 .subtitle {
   font-size: 1rem;
   color: #005dff;
-  opacity: 0.5;
 }
 
-/* Name area */
 .name-area {
   min-height: 140px;
   display: flex;
@@ -61,11 +57,9 @@ h1 {
 
 .placeholder {
   color: #005dff;
-  opacity: 0.3;
   font-size: 1rem;
 }
 
-/* Buttons */
 .btn-row {
   display: flex;
   gap: 10px;
@@ -116,21 +110,19 @@ h1 {
   font-size: 0.875rem;
   cursor: pointer;
   font-family: inherit;
-  opacity: 0.4;
 }
 
 .btn-remove:hover {
-  opacity: 1;
+  background: #005dff;
+  color: #ffffff;
 }
 
-/* Generate button row */
 .generate-wrap {
   display: flex;
   justify-content: center;
   margin-bottom: 2.5rem;
 }
 
-/* Divider */
 .divider-wrap {
   display: flex;
   align-items: center;
@@ -142,28 +134,23 @@ h1 {
   flex: 1;
   height: 1px;
   background: #005dff;
-  opacity: 0.15;
 }
 
 .divider-text {
   font-size: 13px;
   color: #005dff;
-  opacity: 0.4;
   white-space: nowrap;
 }
 
-/* Empty state */
 .empty-text {
   text-align: center;
   color: #005dff;
-  opacity: 0.3;
   padding: 1rem 0;
   font-size: 0.95rem;
 }
 
-/* Saved items */
 .saved-item {
-  border: 1px solid #005dff;
+  border: 1.5px solid #005dff;
   border-radius: 8px;
   padding: 12px 16px;
   display: flex;
@@ -182,7 +169,6 @@ h1 {
   gap: 8px;
 }
 
-/* Share list row */
 .share-list-wrap {
   display: flex;
   justify-content: flex-end;
@@ -190,7 +176,6 @@ h1 {
   position: relative;
 }
 
-/* Dropdown */
 .dropdown-wrap {
   position: relative;
   display: inline-block;
@@ -201,13 +186,13 @@ h1 {
   right: 0;
   top: 110%;
   background: #ffffff;
-  border: 1px solid #005dff;
+  border: 1.5px solid #005dff;
   border-radius: 8px;
   padding: 6px 0;
   min-width: 180px;
   z-index: 50;
   list-style: none;
-  box-shadow: 0 4px 16px rgba(0, 93, 255, 0.10);
+  box-shadow: 0 4px 16px rgba(0, 93, 255, 0.15);
 }
 
 .dropdown-item {
@@ -230,12 +215,10 @@ h1 {
 }
 
 .dropdown-divider {
-  border-top: 1px solid #005dff;
-  opacity: 0.15;
+  border-top: 1.5px solid #005dff;
   margin: 4px 0;
 }
 
-/* Toast */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -250,7 +233,6 @@ h1 {
   z-index: 100;
 }
 
-/* Fade transition */
 .fade {
   transition: opacity 0.35s ease;
 }
