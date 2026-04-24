@@ -1,4 +1,4 @@
-"use client"; // v4
+"use client";
 import { useState } from "react";
 
 const PLATFORMS = [
@@ -11,19 +11,35 @@ const PLATFORMS = [
 function ShareMenu({ name, onCopy }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="dropdown dropdown-end">
-      <button tabIndex={0} className="btn btn-outline btn-sm" onClick={() => setOpen(o => !o)}>
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <button className="btn-secondary" onClick={() => setOpen(o => !o)}>
         Share ↗
       </button>
       {open && (
-        <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 z-50">
+        <ul style={{
+          position: "absolute", right: 0, top: "110%", background: "#fff",
+          border: "1px solid #eee", borderRadius: 8, padding: "8px 0",
+          minWidth: 180, zIndex: 50, listStyle: "none",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.08)"
+        }}>
           {PLATFORMS.map(p => (
             <li key={p.name}>
-              <a href={p.url(name)} target="_blank" rel="noreferrer">{p.name}</a>
+              <a href={p.url(name)} target="_blank" rel="noreferrer" style={{
+                display: "block", padding: "8px 16px", fontSize: 14,
+                color: "#1a1a1a", textDecoration: "none"
+              }}
+                onMouseEnter={e => e.target.style.color = "#005dff"}
+                onMouseLeave={e => e.target.style.color = "#1a1a1a"}
+              >{p.name}</a>
             </li>
           ))}
-          <div className="divider my-1"></div>
-          <li><button onClick={() => { onCopy(name); setOpen(false); }}>Copy name</button></li>
+          <li style={{ borderTop: "1px solid #eee", marginTop: 4, paddingTop: 4 }}>
+            <button onClick={() => { onCopy(name); setOpen(false); }} style={{
+              display: "block", width: "100%", padding: "8px 16px",
+              fontSize: 14, color: "#1a1a1a", background: "none",
+              border: "none", textAlign: "left", cursor: "pointer", borderRadius: 0
+            }}>Copy name</button>
+          </li>
         </ul>
       )}
     </div>
@@ -71,88 +87,100 @@ export default function App() {
   const shareList = () => "Band name ideas:\n" + saved.map((n, i) => `${i + 1}. ${n}`).join("\n");
 
   return (
-    <div className="min-h-screen bg-base-100">
-      <div className="max-w-xl mx-auto px-4 py-12">
+    <div style={{ minHeight: "100vh", backgroundColor: "#fff" }}>
+      <div style={{ maxWidth: 560, margin: "0 auto", padding: "3rem 1.5rem" }}>
 
         {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-primary mb-2">🎸 Band Name Generator</h1>
-          <p className="text-base-content/60">Find the perfect name for your band</p>
+        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+          <h1>🎸 Band Name Generator</h1>
+          <p style={{ marginTop: 8, color: "#888" }}>Find the perfect name for your band</p>
         </div>
 
         {/* Generated name */}
-        <div className="card bg-base-200 shadow-xl mb-6 min-h-36 flex items-center justify-center">
-          <div className="card-body items-center text-center">
-            {current ? (
-              <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
-                <h2 className="card-title text-3xl font-bold text-secondary mb-4 justify-center">{current}</h2>
-                <div className="flex gap-3 justify-center flex-wrap">
-                  <button onClick={() => saveName(current)} className="btn btn-outline btn-secondary btn-sm">
-                    {saved.includes(current) ? "✓ Saved" : "Save"}
-                  </button>
-                  <ShareMenu name={current} onCopy={copyToClipboard} />
-                </div>
+        <div style={{
+          border: "1px solid #eee", borderRadius: 12, minHeight: 140,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          marginBottom: "1.5rem", padding: "2rem"
+        }}>
+          {current ? (
+            <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease", textAlign: "center" }}>
+              <div style={{ fontSize: "2rem", fontWeight: 500, color: "#005dff", marginBottom: "1.25rem" }}>
+                {current}
               </div>
-            ) : (
-              <p className="text-base-content/40 text-lg">Your band name will appear here</p>
-            )}
-          </div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+                <button className="btn-secondary" onClick={() => saveName(current)}>
+                  {saved.includes(current) ? "✓ Saved" : "Save"}
+                </button>
+                <ShareMenu name={current} onCopy={copyToClipboard} />
+              </div>
+            </div>
+          ) : (
+            <p style={{ color: "#bbb", fontSize: "1.1rem" }}>Your band name will appear here</p>
+          )}
         </div>
 
         {/* Generate button */}
-        <div className="flex justify-center mb-10">
-          <button onClick={generate} disabled={loading} className="btn btn-primary btn-wide btn-lg">
-            {loading ? <span className="loading loading-spinner"></span> : null}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "2.5rem" }}>
+          <button onClick={generate} disabled={loading} className="btn-primary" style={{ padding: "12px 48px", fontSize: "1rem" }}>
             {loading ? "Generating..." : current ? "Generate another" : "Generate a band name"}
           </button>
         </div>
 
         {/* Saved names */}
-        <div className="divider">Saved Names ({saved.length})</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "1.25rem" }}>
+          <div style={{ flex: 1, height: "1px", background: "#eee" }} />
+          <span style={{ fontSize: 13, color: "#aaa", whiteSpace: "nowrap" }}>Saved names ({saved.length})</span>
+          <div style={{ flex: 1, height: "1px", background: "#eee" }} />
+        </div>
 
         {saved.length === 0 ? (
-          <p className="text-center text-base-content/40 py-4">Names you save will appear here</p>
+          <p style={{ textAlign: "center", color: "#bbb", padding: "1rem 0" }}>Names you save will appear here</p>
         ) : (
           <>
-            <div className="flex justify-end mb-3">
-              <div className="dropdown dropdown-end">
-                <button tabIndex={0} className="btn btn-outline btn-sm" onClick={() => setListShareOpen(o => !o)}>
-                  Share list
-                </button>
-                {listShareOpen && (
-                  <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-56 z-50">
-                    <li>
-                      <a href={`https://wa.me/?text=${encodeURIComponent(shareList())}`} target="_blank" rel="noreferrer">
-                        Send via WhatsApp
-                      </a>
-                    </li>
-                    <li>
-                      <a href={`mailto:?subject=${encodeURIComponent("Band name ideas")}&body=${encodeURIComponent(shareList())}`}>
-                        Send via email
-                      </a>
-                    </li>
-                    <div className="divider my-1"></div>
-                    <li>
-                      <button onClick={() => { copyToClipboard(shareList()); setListShareOpen(false); }}>
-                        Copy list
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12, position: "relative" }}>
+              <button className="btn-secondary" onClick={() => setListShareOpen(o => !o)}>Share list</button>
+              {listShareOpen && (
+                <ul style={{
+                  position: "absolute", right: 0, top: "110%", background: "#fff",
+                  border: "1px solid #eee", borderRadius: 8, padding: "8px 0",
+                  minWidth: 200, zIndex: 50, listStyle: "none",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.08)"
+                }}>
+                  <li>
+                    <a href={`https://wa.me/?text=${encodeURIComponent(shareList())}`} target="_blank" rel="noreferrer"
+                      style={{ display: "block", padding: "8px 16px", fontSize: 14, color: "#1a1a1a", textDecoration: "none" }}>
+                      Send via WhatsApp
+                    </a>
+                  </li>
+                  <li>
+                    <a href={`mailto:?subject=${encodeURIComponent("Band name ideas")}&body=${encodeURIComponent(shareList())}`}
+                      style={{ display: "block", padding: "8px 16px", fontSize: 14, color: "#1a1a1a", textDecoration: "none" }}>
+                      Send via email
+                    </a>
+                  </li>
+                  <li style={{ borderTop: "1px solid #eee", marginTop: 4, paddingTop: 4 }}>
+                    <button onClick={() => { copyToClipboard(shareList()); setListShareOpen(false); }}
+                      style={{ display: "block", width: "100%", padding: "8px 16px", fontSize: 14, color: "#1a1a1a", background: "none", border: "none", textAlign: "left", cursor: "pointer" }}>
+                      Copy list
+                    </button>
+                  </li>
+                </ul>
+              )}
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {saved.map(n => (
-                <div key={n} className="card bg-base-200 shadow">
-                  <div className="card-body py-3 px-4 flex-row items-center justify-between">
-                    <span className="font-semibold text-base">{n}</span>
-                    <div className="flex gap-2">
-                      <ShareMenu name={n} onCopy={copyToClipboard} />
-                      <button onClick={() => setSaved(s => s.filter(x => x !== n))} className="btn btn-ghost btn-sm text-error">
-                        Remove
-                      </button>
-                    </div>
+                <div key={n} style={{
+                  border: "1px solid #eee", borderRadius: 8, padding: "12px 16px",
+                  display: "flex", alignItems: "center", justifyContent: "space-between"
+                }}>
+                  <span style={{ fontWeight: 500, color: "#005dff" }}>{n}</span>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <ShareMenu name={n} onCopy={copyToClipboard} />
+                    <button className="btn-secondary" onClick={() => setSaved(s => s.filter(x => x !== n))}
+                      style={{ color: "#e74c3c", borderColor: "#fdd" }}>
+                      Remove
+                    </button>
                   </div>
                 </div>
               ))}
@@ -163,10 +191,12 @@ export default function App() {
 
       {/* Toast */}
       {toast && (
-        <div className="toast toast-bottom toast-center z-50">
-          <div className="alert alert-success">
-            <span>{toast}</span>
-          </div>
+        <div style={{
+          position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)",
+          background: "#005dff", color: "#fff", padding: "10px 24px",
+          borderRadius: 8, fontSize: 14, fontWeight: 500, zIndex: 100
+        }}>
+          {toast}
         </div>
       )}
     </div>
