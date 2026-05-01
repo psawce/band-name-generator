@@ -28,167 +28,168 @@ const HUMAN_NAMES = [
   "The P Drive", "The Underhill's Bill"
 ];
 
-const PLATFORMS = [
-  { name: "X / Twitter", url: (n) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Our band is called "${n}" 🎸`)}` },
-  { name: "Facebook", url: (n) => `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(`Our band is called "${n}" 🎸`)}` },
-  { name: "Reddit", url: (n) => `https://reddit.com/submit?title=${encodeURIComponent(`Band name idea: "${n}"`)}` },
-  { name: "WhatsApp", url: (n) => `https://wa.me/?text=${encodeURIComponent(`Check out this band name: "${n}" 🎸`)}` },
-];
-
-function ShareMenu({ name, onCopy }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="dropdown dropdown-end">
-      <button className="btn btn-outline btn-sm" onClick={() => setOpen(o => !o)}>Share ↗</button>
-      {open && (
-        <div className="dropdown-menu" onMouseLeave={() => setOpen(false)}>
-          {PLATFORMS.map(p => (
-            <a key={p.name} href={p.url(name)} target="_blank" rel="noreferrer">{p.name}</a>
-          ))}
-          <div className="dropdown-divider" />
-          <button onClick={() => { onCopy(name); setOpen(false); }}>Copy name</button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function App() {
-  const [current, setCurrent] = useState(null);
-  const [source, setSource] = useState(null);
+export default function Home() {
+  const [bandName, setBandName] = useState("");
+  const [nameType, setNameType] = useState("");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState([]);
-  const [visible, setVisible] = useState(true);
-  const [toast, setToast] = useState("");
-  const [listShareOpen, setListShareOpen] = useState(false);
-  const [count, setCount] = useState(0);
-  const humanIndex = useRef(0);
+  const [fading, setFading] = useState(false);
+  const humanIndexRef = useRef(0);
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2200); };
-  const copyToClipboard = (text) => navigator.clipboard.writeText(text).then(() => showToast("Copied!"));
+  const showName = (name, type) => {
+    setFading(true);
+    setTimeout(() => {
+      setBandName(name);
+      setNameType(type);
+      setFading(false);
+    }, 200);
+  };
 
   const generateAI = async () => {
     setLoading(true);
-    setVisible(false);
-    const nextCount = count + 1;
-    setCount(nextCount);
     try {
-      const res = await fetch("/api/generate", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ count: nextCount }),
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 100,
+          messages: [{
+            role: "user",
+            content: "Generate one single creative, original, and funny band name. Reply with only the band name, nothing else."
+          }]
+        })
       });
       const data = await res.json();
-      setCurrent(data.name || "The Unnamed");
-      setSource("ai");
-      setTimeout(() => setVisible(true), 80);
+      const name = data.content?.[0]?.text?.trim() || "Unknown Band";
+      showName(name, "AI Generated");
     } catch {
-      setCurrent("Connection Lost");
-      setSource("ai");
-      setVisible(true);
+      showName("Error generating name", "AI Generated");
     }
     setLoading(false);
   };
 
   const generateHuman = () => {
-    setVisible(false);
-    const name = HUMAN_NAMES[humanIndex.current % HUMAN_NAMES.length];
-    humanIndex.current += 1;
-    setTimeout(() => {
-      setCurrent(name);
-      setSource("human");
-      setVisible(true);
-    }, 80);
+    const name = HUMAN_NAMES[humanIndexRef.current % HUMAN_NAMES.length];
+    humanIndexRef.current += 1;
+    showName(name, "Human Generated");
   };
 
-  const saveName = (name) => {
-    if (!saved.includes(name)) { setSaved(s => [name, ...s]); showToast("Saved!"); }
-    else showToast("Already saved");
+  const saveName = () => {
+    if (bandName && !saved.includes(bandName)) {
+      setSaved([...saved, bandName]);
+    }
   };
 
-  const shareList = () => "Band name ideas:\n" + saved.map((n, i) => `${i + 1}. ${n}`).join("\n");
+  const removeName = (name) => {
+    setSaved(saved.filter(n => n !== name));
+  };
 
   return (
-    <div className="min-h-screen bg-base-100">
-      <div className="max-w-xl mx-auto px-4 py-12">
+    <div style={{ display: "flex", minHeight: "100vh", background: "#ffffff", fontFamily: "indivisible, sans-serif" }}>
 
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-primary mb-2">🎸 Band Name Generator</h1>
-          <p className="text-base-content/60">Find the perfect name for your band</p>
-        </div>
+      {/* Main Area */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", padding: "3rem 2.5rem" }}>
 
-        <div className="card bg-base-200 shadow-xl mb-6 min-h-36 flex items-center justify-center">
-          <div className="card-body items-center text-center">
-            {current ? (
-              <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.35s ease" }}>
-                <div className="text-xs font-semibold uppercase tracking-widest mb-2 opacity-50">
-                  {source === "ai" ? "AI Generated" : "Human Generated"}
-                </div>
-                <h2 className="card-title text-3xl font-bold text-secondary mb-4 justify-center">{current}</h2>
-                <div className="flex gap-3 justify-center flex-wrap">
-                  <button onClick={() => saveName(current)} className="btn btn-outline btn-secondary btn-sm">
-                    {saved.includes(current) ? "✓ Saved" : "Save"}
-                  </button>
-                  <ShareMenu name={current} onCopy={copyToClipboard} />
-                </div>
-              </div>
-            ) : (
-              <p className="text-base-content/40 text-lg">Your band name will appear here</p>
-            )}
-          </div>
-        </div>
+        <p style={{ fontSize: "0.85rem", color: "#1a1a1a", marginBottom: "2rem" }}>
+          Find the perfect name for your band
+        </p>
 
-        <div className="flex flex-col gap-3 mb-10">
-          <button onClick={generateAI} disabled={loading} className="btn btn-primary btn-lg">
-            {loading ? <span className="loading loading-spinner"></span> : null}
+        {/* Two Buttons */}
+        <div style={{ display: "flex", gap: "12px", marginBottom: "2rem" }}>
+          <button
+            onClick={generateAI}
+            disabled={loading}
+            style={{
+              padding: "10px 22px", fontSize: "14px", fontWeight: 500,
+              border: "1.5px solid #005dff", borderRadius: "6px",
+              background: "#ffffff", color: "#005dff",
+              cursor: loading ? "not-allowed" : "pointer",
+              fontFamily: "indivisible, sans-serif",
+              opacity: loading ? 0.6 : 1,
+              transition: "background 0.15s, color 0.15s"
+            }}
+            onMouseEnter={e => { e.target.style.background = "#005dff"; e.target.style.color = "#ffffff"; }}
+            onMouseLeave={e => { e.target.style.background = "#ffffff"; e.target.style.color = "#005dff"; }}
+          >
             {loading ? "Generating..." : "AI Generated Name"}
           </button>
-          <button onClick={generateHuman} className="btn btn-outline btn-lg">
+
+          <button
+            onClick={generateHuman}
+            style={{
+              padding: "10px 22px", fontSize: "14px", fontWeight: 500,
+              border: "1.5px solid #005dff", borderRadius: "6px",
+              background: "#005dff", color: "#ffffff",
+              cursor: "pointer",
+              fontFamily: "indivisible, sans-serif",
+              transition: "background 0.15s, color 0.15s"
+            }}
+            onMouseEnter={e => { e.target.style.background = "#ffffff"; e.target.style.color = "#005dff"; }}
+            onMouseLeave={e => { e.target.style.background = "#005dff"; e.target.style.color = "#ffffff"; }}
+          >
             Human Generated Name
           </button>
         </div>
 
-        <div className="divider">Saved Names ({saved.length})</div>
+        {/* Band Name Display */}
+        <div style={{
+          opacity: fading ? 0 : 1,
+          transition: "opacity 0.2s",
+          marginBottom: "0.5rem"
+        }}>
+          {bandName ? (
+            <>
+              <div style={{ fontSize: "3rem", fontWeight: 400, color: "#005dff", fontFamily: "fields-display, sans-serif", lineHeight: 1.2, marginBottom: "0.4rem" }}>
+                {bandName}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "#888", marginBottom: "1rem" }}>
+                {nameType}
+              </div>
+              <button
+                onClick={saveName}
+                style={{
+                  fontSize: "13px", padding: "6px 16px",
+                  border: "1px solid #ddd", borderRadius: "5px",
+                  background: "#fff", color: "#1a1a1a",
+                  cursor: "pointer", fontFamily: "indivisible, sans-serif"
+                }}
+              >
+                ♡ Save this name
+              </button>
+            </>
+          ) : (
+            <div style={{ fontSize: "1.1rem", color: "#ccc" }}>Your band name will appear here</div>
+          )}
+        </div>
+      </div>
+
+      {/* Sidebar */}
+      <div style={{
+        width: "240px", borderLeft: "0.5px solid #e5e5e5",
+        padding: "2rem 1.25rem", display: "flex", flexDirection: "column"
+      }}>
+        <div style={{ fontSize: "12px", fontWeight: 500, color: "#888", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "1rem" }}>
+          Saved Names ({saved.length})
+        </div>
 
         {saved.length === 0 ? (
-          <p className="text-center text-base-content/40 py-4">Names you save will appear here</p>
+          <div style={{ fontSize: "13px", color: "#ccc" }}>Names you save will appear here</div>
         ) : (
-          <>
-            <div className="flex justify-end mb-3">
-              <div className="dropdown dropdown-end">
-                <button className="btn btn-outline btn-sm" onClick={() => setListShareOpen(o => !o)}>Share list</button>
-                {listShareOpen && (
-                  <ul className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-56 z-50">
-                    <li><a href={`https://wa.me/?text=${encodeURIComponent(shareList())}`} target="_blank" rel="noreferrer">Send via WhatsApp</a></li>
-                    <li><a href={`mailto:?subject=${encodeURIComponent("Band name ideas")}&body=${encodeURIComponent(shareList())}`}>Send via email</a></li>
-                    <div className="divider my-1"></div>
-                    <li><button onClick={() => { copyToClipboard(shareList()); setListShareOpen(false); }}>Copy list</button></li>
-                  </ul>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col gap-3">
-              {saved.map(n => (
-                <div key={n} className="card bg-base-200 shadow">
-                  <div className="card-body py-3 px-4 flex-row items-center justify-between">
-                    <span className="font-semibold text-base">{n}</span>
-                    <div className="flex gap-2">
-                      <ShareMenu name={n} onCopy={copyToClipboard} />
-                      <button onClick={() => setSaved(s => s.filter(x => x !== n))} className="btn btn-ghost btn-sm text-error">Remove</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
+            {saved.map((name, i) => (
+              <li key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "13px", color: "#1a1a1a" }}>
+                <span>{name}</span>
+                <button
+                  onClick={() => removeName(name)}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#ccc", fontSize: "16px", lineHeight: 1 }}
+                >×</button>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
-      {toast && (
-        <div className="toast toast-bottom toast-center z-50">
-          <div className="alert alert-success"><span>{toast}</span></div>
-        </div>
-      )}
     </div>
   );
 }
