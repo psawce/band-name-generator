@@ -25,7 +25,18 @@ const LIST_NAMES = [
   "Mike Johnson","Electrolytes","Baller","Kate Blanchet","Dangling Modifier","Broheim",
   "Cassingle","Prime Rib","Service Dog","Bureaucratic Fools","Fear of Sour Cream",
   "Willy Mammoth","Whipped Topping","Special Counsel","Everywhere Like Such As",
-  "Bear Are People In Costume","Irregardless","The P Drive","The Underhill's Bill"
+  "Bear Are People In Costume","Irregardless","The P Drive","The Underhill's Bill",
+  "Ham On Five","Tight Gripper","Abbey Normal","Steak Sandwich","Everlasting Gobstopper",
+  "Largesse","Jesus H. Christ","Death Is My Exit Strategy","Numbers Game",
+  "Four Seasons Total Landscaping","The Snyder Cut","Snake Plisken","Mo Black's Brother",
+  "The Obscurely Specific","Dave's Killer Bread","The General Collapse of Society",
+  "Hillary Industrial Complex","Sheeple","Service Merchandise","Sauce",
+  "Two Pronged Attack","Cultured Meat","Is This Thing On","Five Point Plan",
+  "Avant Basic","Bird Aren't Real","Little Lebowski Overachievers","Benghazi Plaza",
+  "The UK Variant","Abner Ravenwood Is Dead","Status Indicator","The Duke of New York",
+  "Unlimited Breadsticks","Emergent Social Blistering","Your Own Personal El Guapo",
+  "Drugs","Tom Cruise Apologist","People With Lasers","Intellectual Zamboni",
+  "Semantic Apocalypse","Sunshine Carpet Cleaners","Avocado Toast","The Russian Dossier"
 ];
 
 const SHARE_PLATFORMS = [
@@ -37,29 +48,26 @@ const SHARE_PLATFORMS = [
   { name: "TikTok", fn: (t) => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied! Paste into TikTok."); } },
 ];
 
-const getTheme = (dark) => ({
-  bg:             dark ? "#0e0e0e" : "#ffffff",
-  surface:        dark ? "#1a1a1a" : "#f9f9f9",
-  border:         dark ? "#2e2e2e" : "#e5e5e5",
-  divider:        dark ? "#222222" : "#f0f0f0",
-  text:           dark ? "#f0f0f0" : "#005dff",
-  textMuted:      dark ? "#888888" : "#999999",
-  textFaint:      dark ? "#555555" : "#aaaaaa",
-  btnPrimaryBg:     dark ? "#f0f0f0" : "#005dff",
-  btnPrimaryText:   dark ? "#005dff" : "#ffffff",
-  btnPrimaryBorder: dark ? "#f0f0f0" : "#005dff",
-  btnOutlineBg:     dark ? "#0e0e0e" : "#ffffff",
-  btnOutlineText:   dark ? "#f0f0f0" : "#005dff",
-  btnOutlineBorder: dark ? "#f0f0f0" : "#005dff",
-  btnGhostBg:       dark ? "#0e0e0e" : "#ffffff",
-  btnGhostText:     dark ? "#888888" : "#555555",
-  btnGhostBorder:   dark ? "#333333" : "#cccccc",
-  toggleBg:         dark ? "#f0f0f0" : "#005dff",
-  toggleText:       dark ? "#005dff" : "#ffffff",
+const getTheme = () => ({
+  bg:               "#ffffff",
+  surface:          "#f9f9f9",
+  border:           "#e5e5e5",
+  divider:          "#f0f0f0",
+  text:             "#005dff",
+  textMuted:        "#999999",
+  textFaint:        "#aaaaaa",
+  btnPrimaryBg:     "#005dff",
+  btnPrimaryText:   "#ffffff",
+  btnPrimaryBorder: "#005dff",
+  btnOutlineBg:     "#ffffff",
+  btnOutlineText:   "#005dff",
+  btnOutlineBorder: "#005dff",
+  btnGhostBg:       "#ffffff",
+  btnGhostText:     "#555555",
+  btnGhostBorder:   "#cccccc",
 });
 
 export default function Home() {
-  const [dark, setDark] = useState(false);
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
@@ -67,7 +75,7 @@ export default function Home() {
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const t = getTheme(dark);
+  const t = getTheme();
 
   const pillBtn = (bg, color, border, small) => ({
     fontFamily: "inherit",
@@ -140,17 +148,12 @@ export default function Home() {
   const alreadySaved = currentName && savedNames.includes(currentName);
 
   return (
-    <div style={{ background: t.bg, minHeight: "100vh", transition: "background 0.2s", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
+    <div style={{ background: t.bg, minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
       <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "system-ui, sans-serif", textAlign: "center" }}>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem" }}>
-          <div style={{ textAlign: "left" }}>
-            <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: t.text }}>Band name generator</h1>
-            <p style={{ fontSize: 13, color: t.textMuted, margin: 0 }}>Generate, save, and share band names.</p>
-          </div>
-          <button onClick={() => setDark(!dark)} style={{ ...pillBtn(t.toggleBg, t.toggleText, t.toggleBg, true), flexShrink: 0, marginLeft: 16 }}>
-            {dark ? "☀ Light" : "☾ Dark"}
-          </button>
+        <div style={{ marginBottom: "2rem" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: t.text }}>Band name generator</h1>
+          <p style={{ fontSize: 13, color: t.textMuted, margin: 0 }}>Generate, save, and share band names.</p>
         </div>
 
         <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: "2rem" }}>
@@ -163,7 +166,7 @@ export default function Home() {
         </div>
 
         {(currentName || loading) && (
-          <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "2rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, transition: "background 0.2s, border-color 0.2s" }}>
+          <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "2rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
             {loading ? (
               <p style={{ fontSize: 13, color: t.textFaint, margin: 0 }}>Generating...</p>
             ) : (
@@ -194,7 +197,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div style={{ border: `1px solid ${t.border}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: t.bg, transition: "background 0.2s, border-color 0.2s" }}>
+            <div style={{ border: `1px solid ${t.border}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: t.bg }}>
               {savedNames.map((name, i) => (
                 <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${t.divider}` : "none" }}>
                   <span style={{ fontSize: 14, color: t.text }}>{name}</span>
@@ -204,7 +207,7 @@ export default function Home() {
             </div>
 
             {showShare && (
-              <div style={{ border: `1px solid ${t.border}`, borderRadius: 14, padding: "1.25rem", background: t.bg, transition: "background 0.2s, border-color 0.2s" }}>
+              <div style={{ border: `1px solid ${t.border}`, borderRadius: 14, padding: "1.25rem", background: t.bg }}>
                 <p style={{ fontSize: 11, color: t.textFaint, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
                   {SHARE_PLATFORMS.map(p => (
