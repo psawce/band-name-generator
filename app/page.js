@@ -237,4 +237,156 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
-      cons
+      const data = await res.json();
+      const name = data.text?.trim() || "Unknown Band";
+      setCurrentName(name);
+      setAiHistory(prev => [...prev, name]);
+      setSource("ai");
+    } catch {
+      setCurrentName("Error — try again");
+    }
+    setLoading(false);
+  };
+
+  const saveName = () => {
+    if (currentName && !savedNames.includes(currentName))
+      setSavedNames([...savedNames, currentName]);
+  };
+
+  const removeName = (n) => setSavedNames(savedNames.filter(s => s !== n));
+
+  const shareText = `My band name shortlist:\n\n${savedNames.map((n, i) => `${i + 1}. ${n}`).join("\n")}\n\n(Band Name Generator)`;
+
+  const copyAll = () => {
+    const ta = document.createElement("textarea");
+    ta.value = shareText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const alreadySaved = currentName && savedNames.includes(currentName);
+
+  return (
+    <>
+      <style>{styles}</style>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
+
+          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+            <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band name generator</h1>
+            <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
+          </div>
+
+          {/* Shared Result */}
+          <div style={{ background: BLUE_BG, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
+            {loading ? (
+              <p style={{ fontSize: 13, color: FAINT, margin: 0 }}>Generating...</p>
+            ) : currentName ? (
+              <>
+                <span style={{ fontSize: 24, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>{currentName}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                    {source === "ai" ? "AI generated" : "Human generated"}
+                  </span>
+                  <span style={{ color: BORDER }}>·</span>
+                  <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("#fff", MUTED, BORDER, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
+                    {alreadySaved ? "Saved" : "+ Save"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p style={{ fontSize: 13, color: FAINT, margin: 0 }}>Your band name will appear here.</p>
+            )}
+          </div>
+
+          {/* Two Cards Side by Side */}
+          <div className="bng-cards">
+
+            {/* Human Card */}
+            <div className="bng-card">
+              <p className="bng-card-label">Human Generated</p>
+              <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
+                Human Generated Name
+              </button>
+            </div>
+
+            {/* AI Card */}
+            <div className="bng-card">
+              <p className="bng-card-label">AI Generated</p>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="bng-input"
+                  placeholder="Genre (optional)"
+                  value={genre}
+                  onChange={e => handleGenreChange(e.target.value)}
+                  onBlur={() => setTimeout(() => setSuggestions([]), 150)}
+                />
+                {suggestions.length > 0 && (
+                  <div className="bng-autocomplete">
+                    {suggestions.map(s => (
+                      <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <input
+                className="bng-input"
+                placeholder="Must include this word (optional)"
+                value={requiredWord}
+                onChange={e => setRequiredWord(e.target.value)}
+              />
+              <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+                {loading ? "Thinking..." : "AI Generated Name"}
+              </button>
+            </div>
+          </div>
+
+          {/* Saved List */}
+          {savedNames.length > 0 && (
+            <div style={{ marginTop: "1rem" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                  Your list — {savedNames.length}
+                </span>
+                <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                  {showShare ? "Hide" : "Share List"}
+                </button>
+              </div>
+
+              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
+                {savedNames.map((name, i) => (
+                  <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+                    <span style={{ fontSize: 14, color: BLUE }}>{name}</span>
+                    <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
+                  </div>
+                ))}
+              </div>
+
+              {showShare && (
+                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
+                  <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
+                    {SHARE_PLATFORMS.map(p => (
+                      <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
+                    <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
+                      {copied ? "Copied!" : "Copy All To Clipboard"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
