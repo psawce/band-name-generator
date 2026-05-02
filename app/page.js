@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 const LIST_NAMES = [
   "Some U.S. Americans","Tragically Underseasoned","The Irrelevant Takes","Oblong Ball",
@@ -95,10 +95,7 @@ const styles = `
     margin-bottom: 1rem;
   }
   @media (min-width: 600px) {
-    .bng-cards {
-      flex-direction: row;
-      align-items: stretch;
-    }
+    .bng-cards { flex-direction: row; align-items: stretch; }
     .bng-card { flex: 1; }
   }
   .bng-card {
@@ -132,6 +129,22 @@ const styles = `
   }
   .bng-input:focus { border-color: #005dff; }
   .bng-input::placeholder { color: #aaa; }
+  .bng-select {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 9px 14px;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 999px;
+    outline: none;
+    box-sizing: border-box;
+    background: #fff;
+    color: #111;
+    margin-bottom: 0.6rem;
+    appearance: none;
+    cursor: pointer;
+  }
+  .bng-select:focus { border-color: #005dff; }
   .bng-autocomplete {
     background: #fff;
     border: 1.5px solid #e5e5e5;
@@ -205,6 +218,8 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [genre, setGenre] = useState("");
   const [requiredWord, setRequiredWord] = useState("");
+  const [wordCount, setWordCount] = useState("");
+  const [vibe, setVibe] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const handleGenreChange = (val) => {
@@ -229,9 +244,12 @@ export default function Home() {
       const avoidList = aiHistory.slice(-10).join(", ");
       let prompt = `Generate one creative, funny, or absurd band name.`;
       if (genre) prompt += ` The band plays ${genre} music — let the genre subtly influence the name's tone or style.`;
+      if (vibe) prompt += ` The overall vibe or feeling of the name should be: "${vibe}".`;
       if (requiredWord) prompt += ` The band name MUST include the word "${requiredWord}".`;
-      if (!genre && !requiredWord) prompt += ` Draw loose inspiration from this random theme for variety: "${seed}".`;
+      if (wordCount) prompt += ` The band name MUST be exactly ${wordCount} word${wordCount === "1" ? "" : "s"} long.`;
+      if (!genre && !requiredWord && !vibe && !wordCount) prompt += ` Draw loose inspiration from this random theme for variety: "${seed}".`;
       prompt += ` Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
+
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -303,7 +321,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* Two Cards Side by Side */}
+          {/* Two Cards */}
           <div className="bng-cards">
 
             {/* Human Card */}
@@ -317,6 +335,8 @@ export default function Home() {
             {/* AI Card */}
             <div className="bng-card">
               <p className="bng-card-label">AI Generated</p>
+
+              {/* Genre */}
               <div style={{ position: "relative" }}>
                 <input
                   className="bng-input"
@@ -333,12 +353,35 @@ export default function Home() {
                   </div>
                 )}
               </div>
+
+              {/* Vibe */}
+              <input
+                className="bng-input"
+                placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
+                value={vibe}
+                onChange={e => setVibe(e.target.value)}
+              />
+
+              {/* Required Word */}
               <input
                 className="bng-input"
                 placeholder="Must include this word (optional)"
                 value={requiredWord}
                 onChange={e => setRequiredWord(e.target.value)}
               />
+
+              {/* Word Count */}
+              <select
+                className="bng-select"
+                value={wordCount}
+                onChange={e => setWordCount(e.target.value)}
+              >
+                <option value="">Number of words (optional)</option>
+                {[1,2,3,4,5,6,7,8].map(n => (
+                  <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
+                ))}
+              </select>
+
               <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
                 {loading ? "Thinking..." : "AI Generated Name"}
               </button>
