@@ -139,11 +139,12 @@ const styles = `
     outline: none;
     box-sizing: border-box;
     background: #fff;
-    color: #111;
+    color: #aaa;
     margin-bottom: 0.6rem;
     appearance: none;
     cursor: pointer;
   }
+  .bng-select.has-value { color: #111; }
   .bng-select:focus { border-color: #005dff; }
   .bng-autocomplete {
     background: #fff;
@@ -249,7 +250,6 @@ export default function Home() {
       if (wordCount) prompt += ` The band name MUST be exactly ${wordCount} word${wordCount === "1" ? "" : "s"} long.`;
       if (!genre && !requiredWord && !vibe && !wordCount) prompt += ` Draw loose inspiration from this random theme for variety: "${seed}".`;
       prompt += ` Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
-
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -335,8 +335,6 @@ export default function Home() {
             {/* AI Card */}
             <div className="bng-card">
               <p className="bng-card-label">AI Generated</p>
-
-              {/* Genre */}
               <div style={{ position: "relative" }}>
                 <input
                   className="bng-input"
@@ -353,26 +351,20 @@ export default function Home() {
                   </div>
                 )}
               </div>
-
-              {/* Vibe */}
               <input
                 className="bng-input"
                 placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
                 value={vibe}
                 onChange={e => setVibe(e.target.value)}
               />
-
-              {/* Required Word */}
               <input
                 className="bng-input"
                 placeholder="Must include this word (optional)"
                 value={requiredWord}
                 onChange={e => setRequiredWord(e.target.value)}
               />
-
-              {/* Word Count */}
               <select
-                className="bng-select"
+                className={`bng-select${wordCount ? " has-value" : ""}`}
                 value={wordCount}
                 onChange={e => setWordCount(e.target.value)}
               >
@@ -381,7 +373,6 @@ export default function Home() {
                   <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
                 ))}
               </select>
-
               <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
                 {loading ? "Thinking..." : "AI Generated Name"}
               </button>
@@ -399,7 +390,6 @@ export default function Home() {
                   {showShare ? "Hide" : "Share List"}
                 </button>
               </div>
-
               <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
                 {savedNames.map((name, i) => (
                   <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
@@ -408,7 +398,6 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-
               {showShare && (
                 <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
                   <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
