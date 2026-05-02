@@ -88,13 +88,28 @@ const MUTED   = "#999999";
 const FAINT   = "#aaaaaa";
 
 const styles = `
+  .bng-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (min-width: 600px) {
+    .bng-cards {
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .bng-card {
+      flex: 1;
+    }
+  }
   .bng-card {
     background: #f4f6fc;
     border: 1px solid #e5e5e5;
     border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    text-align: left;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
   }
   .bng-card-label {
     font-size: 11px;
@@ -102,7 +117,22 @@ const styles = `
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #005dff;
-    margin: 0 0 1rem;
+    margin: 0 0 0.75rem;
+  }
+  .bng-result {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    flex: 1;
   }
   .bng-input {
     width: 100%;
@@ -127,9 +157,9 @@ const styles = `
     background: #fff;
     border: 1.5px solid #e5e5e5;
     border-radius: 12px;
-    max-height: 180px;
+    max-height: 160px;
     overflow-y: auto;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
   .bng-autocomplete-item {
@@ -139,13 +169,8 @@ const styles = `
     color: #111;
     border-bottom: 1px solid #f0f0f0;
   }
-  .bng-autocomplete-item:last-child {
-    border-bottom: none;
-  }
-  .bng-autocomplete-item:hover {
-    background: #f4f6fc;
-    color: #005dff;
-  }
+  .bng-autocomplete-item:last-child { border-bottom: none; }
+  .bng-autocomplete-item:hover { background: #f4f6fc; color: #005dff; }
   .bng-btn-full {
     font-family: inherit;
     font-size: 13px;
@@ -159,31 +184,13 @@ const styles = `
     align-items: center;
     justify-content: center;
     outline: none;
-    white-space: nowrap;
     transition: opacity 0.15s;
     box-sizing: border-box;
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: auto;
   }
-  .bng-btn-primary {
-    background: #005dff;
-    color: #fff;
-    border: 2px solid #005dff;
-  }
-  .bng-btn-outline {
-    background: #fff;
-    color: #005dff;
-    border: 2px solid #005dff;
-  }
-  .bng-btn-ghost {
-    background: #fff;
-    color: #999;
-    border: 1.5px solid #e5e5e5;
-    font-size: 12px !important;
-    padding: 5px 14px !important;
-    width: auto !important;
-    margin-top: 0 !important;
-  }
+  .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
+  .bng-btn-outline { background: #fff; color: #005dff; border: 2px solid #005dff; }
 `;
 
 const pillBtn = (bg, color, border, small, full) => ({
@@ -210,8 +217,8 @@ const pillBtn = (bg, color, border, small, full) => ({
 });
 
 export default function Home() {
-  const [currentName, setCurrentName] = useState(null);
-  const [source, setSource] = useState(null);
+  const [humanName, setHumanName] = useState(null);
+  const [aiName, setAiName] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
   const [aiHistory, setAiHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -220,29 +227,22 @@ export default function Home() {
   const [genre, setGenre] = useState("");
   const [requiredWord, setRequiredWord] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const genreRef = useRef(null);
 
   const handleGenreChange = (val) => {
     setGenre(val);
     if (val.trim().length < 1) { setSuggestions([]); return; }
-    const matches = GENRES.filter(g => g.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
-    setSuggestions(matches);
+    setSuggestions(GENRES.filter(g => g.toLowerCase().includes(val.toLowerCase())).slice(0, 8));
   };
 
-  const selectGenre = (g) => {
-    setGenre(g);
-    setSuggestions([]);
-  };
+  const selectGenre = (g) => { setGenre(g); setSuggestions([]); };
 
   const getRandom = () => {
-    setCurrentName(LIST_NAMES[Math.floor(Math.random() * LIST_NAMES.length)]);
-    setSource("list");
+    setHumanName(LIST_NAMES[Math.floor(Math.random() * LIST_NAMES.length)]);
   };
 
   const getAI = async () => {
     setLoading(true);
-    setCurrentName(null);
-    setSource(null);
+    setAiName(null);
     try {
       const seed = RANDOM_SEEDS[Math.floor(Math.random() * RANDOM_SEEDS.length)];
       const avoidList = aiHistory.slice(-10).join(", ");
@@ -251,7 +251,6 @@ export default function Home() {
       if (requiredWord) prompt += ` The band name MUST include the word "${requiredWord}".`;
       if (!genre && !requiredWord) prompt += ` Draw loose inspiration from this random theme for variety: "${seed}".`;
       prompt += ` Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
-
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -259,18 +258,17 @@ export default function Home() {
       });
       const data = await res.json();
       const name = data.text?.trim() || "Unknown Band";
-      setCurrentName(name);
+      setAiName(name);
       setAiHistory(prev => [...prev, name]);
-      setSource("ai");
     } catch {
-      setCurrentName("Error — try again");
+      setAiName("Error — try again");
     }
     setLoading(false);
   };
 
-  const saveName = () => {
-    if (currentName && !savedNames.includes(currentName))
-      setSavedNames([...savedNames, currentName]);
+  const saveName = (name) => {
+    if (name && !savedNames.includes(name))
+      setSavedNames([...savedNames, name]);
   };
 
   const removeName = (n) => setSavedNames(savedNames.filter(s => s !== n));
@@ -288,83 +286,86 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const alreadySaved = currentName && savedNames.includes(currentName);
+  const ResultCard = ({ name, label, onSave }) => (
+    <div className="bng-result">
+      {name ? (
+        <>
+          <span style={{ fontSize: 18, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>{name}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
+            <span style={{ color: BORDER }}>·</span>
+            <button
+              onClick={() => onSave(name)}
+              disabled={savedNames.includes(name)}
+              style={{ ...pillBtn("#fff", MUTED, BORDER, true), opacity: savedNames.includes(name) ? 0.4 : 1, cursor: savedNames.includes(name) ? "default" : "pointer" }}
+            >
+              {savedNames.includes(name) ? "Saved" : "+ Save"}
+            </button>
+          </div>
+        </>
+      ) : (
+        <span style={{ fontSize: 13, color: FAINT }}>—</span>
+      )}
+    </div>
+  );
 
   return (
     <>
       <style>{styles}</style>
       <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
-        <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
 
           <div style={{ textAlign: "center", marginBottom: "2rem" }}>
             <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band name generator</h1>
             <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
           </div>
 
-          {/* Human Generated Card */}
-          <div className="bng-card">
-            <p className="bng-card-label">Human Generated</p>
-            <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
-              Human Generated Name
-            </button>
-          </div>
-
-          {/* AI Generated Card */}
-          <div className="bng-card">
-            <p className="bng-card-label">AI Generated</p>
-            <div style={{ position: "relative" }}>
-              <input
-                ref={genreRef}
-                className="bng-input"
-                placeholder="Genre (optional)"
-                value={genre}
-                onChange={e => handleGenreChange(e.target.value)}
-                onBlur={() => setTimeout(() => setSuggestions([]), 150)}
-              />
-              {suggestions.length > 0 && (
-                <div className="bng-autocomplete">
-                  {suggestions.map(s => (
-                    <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
-                  ))}
-                </div>
-              )}
+          <div className="bng-cards">
+            {/* Human Card */}
+            <div className="bng-card">
+              <p className="bng-card-label">Human Generated</p>
+              <ResultCard name={humanName} label="Human generated" onSave={saveName} />
+              <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
+                Human Generated Name
+              </button>
             </div>
-            <input
-              className="bng-input"
-              placeholder="Must include this word (optional)"
-              value={requiredWord}
-              onChange={e => setRequiredWord(e.target.value)}
-            />
-            <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-              {loading ? "Thinking..." : "AI Generated Name"}
-            </button>
-          </div>
 
-          {/* Result Card */}
-          {(currentName || loading) && (
-            <div style={{ background: BLUE_BG, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
-              {loading ? (
-                <p style={{ fontSize: 13, color: FAINT, margin: 0 }}>Generating...</p>
-              ) : (
-                <>
-                  <span style={{ fontSize: 24, fontWeight: 500, color: BLUE, lineHeight: 1.3, textAlign: "center" }}>{currentName}</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                      {source === "ai" ? "AI generated" : "Human generated"}
-                    </span>
-                    <span style={{ color: BORDER }}>·</span>
-                    <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("#fff", MUTED, BORDER, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
-                      {alreadySaved ? "Saved" : "+ Save"}
-                    </button>
+            {/* AI Card */}
+            <div className="bng-card">
+              <p className="bng-card-label">AI Generated</p>
+              <ResultCard name={loading ? null : aiName} label="AI generated" onSave={saveName} />
+              {loading && <div className="bng-result" style={{ flex: "unset", minHeight: 60 }}><span style={{ fontSize: 13, color: FAINT }}>Generating...</span></div>}
+              <div style={{ position: "relative" }}>
+                <input
+                  className="bng-input"
+                  placeholder="Genre (optional)"
+                  value={genre}
+                  onChange={e => handleGenreChange(e.target.value)}
+                  onBlur={() => setTimeout(() => setSuggestions([]), 150)}
+                />
+                {suggestions.length > 0 && (
+                  <div className="bng-autocomplete">
+                    {suggestions.map(s => (
+                      <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                    ))}
                   </div>
-                </>
-              )}
+                )}
+              </div>
+              <input
+                className="bng-input"
+                placeholder="Must include this word (optional)"
+                value={requiredWord}
+                onChange={e => setRequiredWord(e.target.value)}
+              />
+              <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+                {loading ? "Thinking..." : "AI Generated Name"}
+              </button>
             </div>
-          )}
+          </div>
 
           {/* Saved List */}
           {savedNames.length > 0 && (
-            <div>
+            <div style={{ marginTop: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
                 <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
                   Your list — {savedNames.length}
