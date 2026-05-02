@@ -1,9 +1,6 @@
 "use client";
 
 import { useState } from "react";
-...
-
-import { useState } from "react";
 
 const LIST_NAMES = [
   "Some U.S. Americans","Tragically Underseasoned","The Irrelevant Takes","Oblong Ball",
@@ -61,11 +58,10 @@ const SHARE_PLATFORMS = [
   { name: "TikTok", fn: (t) => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied! Paste into TikTok."); } },
 ];
 
-// Blue palette
-const BLUE      = "#005dff";
-const BLUE_10   = "#e5eeff";
-const BLUE_20   = "#ccdaff";
-const BLUE_40   = "#99b5ff";
+const BLUE    = "#005dff";
+const BLUE_10 = "#e5eeff";
+const BLUE_20 = "#ccdaff";
+const BLUE_40 = "#99b5ff";
 
 const pillBtn = (bg, color, border, small) => ({
   fontFamily: "inherit",
@@ -109,7 +105,7 @@ const styles = `
   }
 `;
 
-export default function App() {
+export default function Home() {
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
