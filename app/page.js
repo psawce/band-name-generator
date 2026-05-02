@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const LIST_NAMES = [
   "Some U.S. Americans","Tragically Underseasoned","The Irrelevant Takes","Oblong Ball",
@@ -39,6 +39,28 @@ const LIST_NAMES = [
   "Semantic Apocalypse","Sunshine Carpet Cleaners","Avocado Toast","The Russian Dossier"
 ];
 
+const GENRES = [
+  "Classic Rock","Hard Rock","Soft Rock","Punk Rock","Post-Punk","Garage Rock","Psychedelic Rock","Progressive Rock","Art Rock","Glam Rock","Indie Rock","Alternative Rock","Grunge","Emo","Screamo","Math Rock","Post-Rock","Noise Rock","Surf Rock","Folk Rock","Southern Rock","Heartland Rock","Rockabilly","Stoner Rock","Desert Rock",
+  "Heavy Metal","Thrash Metal","Death Metal","Black Metal","Doom Metal","Power Metal","Glam Metal","Hair Metal","Nu-Metal","Groove Metal","Symphonic Metal","Folk Metal","Viking Metal","Metalcore","Deathcore","Djent","Progressive Metal","Sludge Metal",
+  "Synth-pop","Electropop","Teen Pop","Bubblegum Pop","Chamber Pop","Dream Pop","Indie Pop","Art Pop","Baroque Pop","Dance Pop","K-Pop","J-Pop","C-Pop","Latin Pop","Pop Rock","Power Pop","Hyperpop","Sophisti-pop",
+  "Old School Hip-Hop","East Coast Hip-Hop","West Coast Hip-Hop","Southern Rap","Trap","Drill","Mumble Rap","Conscious Rap","Political Rap","Gangsta Rap","Boom Bap","Lo-fi Hip-Hop","Cloud Rap","Jazz Rap","Crunk","G-Funk","Horrorcore","Emo Rap","Alternative Hip-Hop","Phonk",
+  "Classic Soul","Motown","Neo-Soul","Contemporary R&B","Quiet Storm","New Jack Swing","Funk","Gospel","Blue-Eyed Soul","Alternative R&B",
+  "House","Deep House","Tech House","Progressive House","Future House","Techno","Detroit Techno","Industrial Techno","Trance","Psytrance","Progressive Trance","Drum & Bass","Liquid DnB","Jungle","Dubstep","Brostep","Future Bass","EDM","Big Room","Electro","Synthwave","Retrowave","Vaporwave","Chillwave","Lo-fi","Ambient","Dark Ambient","IDM","Breakbeat","UK Garage","2-Step","Grime","Footwork","Juke","Jersey Club","Afro House","Melodic Techno",
+  "Classic Country","Outlaw Country","Country Pop","Bro-Country","Country Rock","Americana","Bluegrass","Progressive Bluegrass","Honky Tonk","Western Swing","Country Folk","Neo-Traditional Country","Alt-Country",
+  "Traditional Jazz","Dixieland","Swing","Bebop","Cool Jazz","Hard Bop","Modal Jazz","Free Jazz","Jazz Fusion","Smooth Jazz","Acid Jazz","Nu-Jazz","Vocal Jazz","Latin Jazz","Afro-Cuban Jazz","Jazz Funk",
+  "Delta Blues","Piedmont Blues","Chicago Blues","Electric Blues","Texas Blues","Blues Rock","Swamp Blues","Jump Blues","Soul Blues",
+  "Traditional Folk","Contemporary Folk","Anti-Folk","Freak Folk","Psychedelic Folk","Celtic Folk","Singer-Songwriter","Neofolk",
+  "Reggaeton","Salsa","Bachata","Cumbia","Merengue","Vallenato","Bossa Nova","Samba","Tango","Tropical","Banda","Norteño","Corridos","Corridos Tumbados","Flamenco","Urbano Latino",
+  "Roots Reggae","Dancehall","Ska","Rocksteady","Dub","Lovers Rock","Ragga","Soca","Calypso","Kompa","Zouk",
+  "Traditional Gospel","Contemporary Christian Music","Christian Rock","Christian Hip-Hop","Southern Gospel","Black Gospel","Praise & Worship",
+  "Orchestral Pop","Cinematic","Film Score","Neoclassical","Contemporary Classical","Minimalism","Post-Minimalism","New Age",
+  "Afrobeats","Afropop","Highlife","Amapiano","Kwaito","Gqom","Bollywood","Bhangra","Qawwali","Mandopop","Fado","Klezmer","Celtic","Hawaiian","Slack-Key Guitar","Mbalax",
+  "Classic Punk","Hardcore Punk","Pop Punk","Ska Punk","Crust Punk","Anarcho-Punk","Cold Wave","Goth Rock","Darkwave","Synth Punk","Queercore",
+  "Noise","Industrial","Power Electronics","Drone","Glitch","Musique Concrète","Lowercase","Plunderphonics","Hauntology","Witch House",
+  "Classic Funk","P-Funk","Boogie","Disco","Nu-Disco","Space Disco","Post-Disco","Electro-Funk",
+  "Ambient New Age","Nature Sounds","Healing Frequencies","Meditation Music","Space Music"
+];
+
 const RANDOM_SEEDS = [
   "office supplies","deep sea creatures","obscure sports","medieval professions",
   "kitchen appliances","Cold War era terms","1970s slang","geological formations",
@@ -58,11 +80,111 @@ const SHARE_PLATFORMS = [
   { name: "TikTok", fn: (t) => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied! Paste into TikTok."); } },
 ];
 
-// Blue palette
-const BLUE      = "#005dff";
-const BLUE_10   = "#e5eeff";
-const BLUE_20   = "#ccdaff";
-const BLUE_40   = "#99b5ff";
+const BLUE    = "#005dff";
+const BLUE_BG = "#f4f6fc";
+const BORDER  = "#e5e5e5";
+const DIVIDER = "#f0f0f0";
+const MUTED   = "#999999";
+const FAINT   = "#aaaaaa";
+
+const styles = `
+  .bng-card {
+    background: #f4f6fc;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  .bng-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #005dff;
+    margin: 0 0 1rem;
+  }
+  .bng-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 9px 14px;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 999px;
+    outline: none;
+    box-sizing: border-box;
+    background: #fff;
+    color: #111;
+    margin-bottom: 0.6rem;
+  }
+  .bng-input:focus {
+    border-color: #005dff;
+  }
+  .bng-input::placeholder {
+    color: #aaa;
+  }
+  .bng-autocomplete {
+    background: #fff;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 12px;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .bng-autocomplete-item {
+    padding: 9px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #111;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .bng-autocomplete-item:last-child {
+    border-bottom: none;
+  }
+  .bng-autocomplete-item:hover {
+    background: #f4f6fc;
+    color: #005dff;
+  }
+  .bng-btn-full {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 999px;
+    padding: 9px 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .bng-btn-primary {
+    background: #005dff;
+    color: #fff;
+    border: 2px solid #005dff;
+  }
+  .bng-btn-outline {
+    background: #fff;
+    color: #005dff;
+    border: 2px solid #005dff;
+  }
+  .bng-btn-ghost {
+    background: #fff;
+    color: #999;
+    border: 1.5px solid #e5e5e5;
+    font-size: 12px !important;
+    padding: 5px 14px !important;
+    width: auto !important;
+    margin-top: 0 !important;
+  }
+`;
 
 const pillBtn = (bg, color, border, small, full) => ({
   fontFamily: "inherit",
@@ -87,26 +209,7 @@ const pillBtn = (bg, color, border, small, full) => ({
   width: full ? "100%" : "auto",
 });
 
-const styles = `
-  .bng-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 2rem;
-  }
-  @media (min-width: 480px) {
-    .bng-btns {
-      flex-direction: row;
-      justify-content: center;
-    }
-    .bng-btns button {
-      width: auto !important;
-      min-width: 180px;
-    }
-  }
-`;
-
-export default function App() {
+export default function Home() {
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
@@ -114,6 +217,22 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [genre, setGenre] = useState("");
+  const [requiredWord, setRequiredWord] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const genreRef = useRef(null);
+
+  const handleGenreChange = (val) => {
+    setGenre(val);
+    if (val.trim().length < 1) { setSuggestions([]); return; }
+    const matches = GENRES.filter(g => g.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
+    setSuggestions(matches);
+  };
+
+  const selectGenre = (g) => {
+    setGenre(g);
+    setSuggestions([]);
+  };
 
   const getRandom = () => {
     setCurrentName(LIST_NAMES[Math.floor(Math.random() * LIST_NAMES.length)]);
@@ -127,7 +246,12 @@ export default function App() {
     try {
       const seed = RANDOM_SEEDS[Math.floor(Math.random() * RANDOM_SEEDS.length)];
       const avoidList = aiHistory.slice(-10).join(", ");
-      const prompt = `Generate one creative, funny, or absurd band name. Draw loose inspiration from this random theme for variety: "${seed}". The name does NOT need to be literally about that theme — just use it as a creative jumping-off point. Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
+      let prompt = `Generate one creative, funny, or absurd band name.`;
+      if (genre) prompt += ` The band plays ${genre} music — let the genre subtly influence the name's tone or style.`;
+      if (requiredWord) prompt += ` The band name MUST include the word "${requiredWord}".`;
+      if (!genre && !requiredWord) prompt += ` Draw loose inspiration from this random theme for variety: "${seed}".`;
+      prompt += ` Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
+
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -170,35 +294,66 @@ export default function App() {
     <>
       <style>{styles}</style>
       <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
-        <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "system-ui, sans-serif", textAlign: "center" }}>
+        <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
 
-          <div style={{ marginBottom: "2rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
             <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band name generator</h1>
-            <p style={{ fontSize: 13, color: BLUE_40, margin: 0 }}>Generate, save, and share band names.</p>
+            <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
           </div>
 
-          <div className="bng-btns">
-            <button onClick={getAI} disabled={loading} style={{ ...pillBtn(BLUE, "#fff", BLUE, false), opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-              {loading ? "Thinking..." : "AI Generated Name"}
-            </button>
-            <button onClick={getRandom} style={pillBtn("#fff", BLUE, BLUE, false)}>
+          {/* Human Generated Card */}
+          <div className="bng-card">
+            <p className="bng-card-label">Human Generated</p>
+            <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
               Human Generated Name
             </button>
           </div>
 
+          {/* AI Generated Card */}
+          <div className="bng-card">
+            <p className="bng-card-label">AI Generated</p>
+            <div style={{ position: "relative" }}>
+              <input
+                ref={genreRef}
+                className="bng-input"
+                placeholder="Genre (optional)"
+                value={genre}
+                onChange={e => handleGenreChange(e.target.value)}
+                onBlur={() => setTimeout(() => setSuggestions([]), 150)}
+              />
+              {suggestions.length > 0 && (
+                <div className="bng-autocomplete">
+                  {suggestions.map(s => (
+                    <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <input
+              className="bng-input"
+              placeholder="Must include this word (optional)"
+              value={requiredWord}
+              onChange={e => setRequiredWord(e.target.value)}
+            />
+            <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+              {loading ? "Thinking..." : "AI Generated Name"}
+            </button>
+          </div>
+
+          {/* Result Card */}
           {(currentName || loading) && (
-            <div style={{ background: BLUE_10, border: `1px solid ${BLUE_20}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "2rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
+            <div style={{ background: BLUE_BG, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
               {loading ? (
-                <p style={{ fontSize: 13, color: BLUE_40, margin: 0 }}>Generating...</p>
+                <p style={{ fontSize: 13, color: FAINT, margin: 0 }}>Generating...</p>
               ) : (
                 <>
-                  <span style={{ fontSize: 24, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>{currentName}</span>
+                  <span style={{ fontSize: 24, fontWeight: 500, color: BLUE, lineHeight: 1.3, textAlign: "center" }}>{currentName}</span>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 11, color: BLUE_40, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                    <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                       {source === "ai" ? "AI generated" : "Human generated"}
                     </span>
-                    <span style={{ color: BLUE_20 }}>·</span>
-                    <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn(BLUE_10, BLUE, BLUE_40, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
+                    <span style={{ color: BORDER }}>·</span>
+                    <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("#fff", MUTED, BORDER, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
                       {alreadySaved ? "Saved" : "+ Save"}
                     </button>
                   </div>
@@ -207,38 +362,39 @@ export default function App() {
             </div>
           )}
 
+          {/* Saved List */}
           {savedNames.length > 0 && (
-            <div style={{ textAlign: "left" }}>
+            <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-                <span style={{ fontSize: 11, fontWeight: 500, color: BLUE_40, letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
                   Your list — {savedNames.length}
                 </span>
-                <button onClick={() => setShowShare(!showShare)} style={pillBtn(BLUE_10, BLUE, BLUE_20, true)}>
+                <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
                   {showShare ? "Hide" : "Share List"}
                 </button>
               </div>
 
-              <div style={{ border: `1px solid ${BLUE_20}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
+              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
                 {savedNames.map((name, i) => (
-                  <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${BLUE_10}` : "none" }}>
+                  <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
                     <span style={{ fontSize: 14, color: BLUE }}>{name}</span>
-                    <button onClick={() => removeName(name)} style={pillBtn(BLUE_10, BLUE, BLUE_20, true)}>Remove</button>
+                    <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
                   </div>
                 ))}
               </div>
 
               {showShare && (
-                <div style={{ border: `1px solid ${BLUE_20}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
-                  <p style={{ fontSize: 11, color: BLUE_40, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
+                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
+                  <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
                     {SHARE_PLATFORMS.map(p => (
-                      <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn(BLUE_10, BLUE, BLUE_20, true)}>
+                      <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
                         {p.name}
                       </button>
                     ))}
                   </div>
-                  <div style={{ borderTop: `1px solid ${BLUE_20}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
-                    <button onClick={copyAll} style={{ ...pillBtn("#fff", BLUE, BLUE, false), width: "100%" }}>
+                  <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
+                    <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
                       {copied ? "Copied!" : "Copy All To Clipboard"}
                     </button>
                   </div>
