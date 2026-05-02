@@ -39,6 +39,16 @@ const LIST_NAMES = [
   "Semantic Apocalypse","Sunshine Carpet Cleaners","Avocado Toast","The Russian Dossier"
 ];
 
+const RANDOM_SEEDS = [
+  "office supplies","deep sea creatures","obscure sports","medieval professions",
+  "kitchen appliances","Cold War era terms","1970s slang","geological formations",
+  "fast food items","conspiracy theories","bureaucratic jargon","defunct airlines",
+  "vintage software","obsolete technology","regional American foods","legal terminology",
+  "weather phenomena","corporate buzzwords","forgotten celebrities","pharmaceutical terms",
+  "plumbing fixtures","agricultural equipment","tax terminology","cargo shipping",
+  "municipal services","vintage board games","diplomatic language","industrial chemicals",
+];
+
 const SHARE_PLATFORMS = [
   { name: "Messages", fn: (t) => { const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent); if (isMobile) { window.location.href = `sms:?body=${encodeURIComponent(t)}`; } else { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("SMS is only available on mobile. Your list has been copied to clipboard!"); } } },
   { name: "WhatsApp", fn: (t) => { window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, "_blank"); } },
@@ -71,6 +81,7 @@ export default function Home() {
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
+  const [aiHistory, setAiHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -109,15 +120,19 @@ export default function Home() {
     setCurrentName(null);
     setSource(null);
     try {
+      const seed = RANDOM_SEEDS[Math.floor(Math.random() * RANDOM_SEEDS.length)];
+      const avoidList = aiHistory.slice(-10).join(", ");
+      const prompt = `Generate one creative, funny, or absurd band name. Draw loose inspiration from this random theme for variety: "${seed}". The name does NOT need to be literally about that theme — just use it as a creative jumping-off point. Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
+
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: "Generate one creative, funny, or absurd band name. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes."
-        }),
+        body: JSON.stringify({ prompt }),
       });
       const data = await res.json();
-      setCurrentName(data.text?.trim() || "Unknown Band");
+      const name = data.text?.trim() || "Unknown Band";
+      setCurrentName(name);
+      setAiHistory(prev => [...prev, name]);
       setSource("ai");
     } catch {
       setCurrentName("Error — try again");
@@ -157,11 +172,11 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: "2rem" }}>
-          <button onClick={getAI} disabled={loading} style={{ ...pillBtn(t.btnPrimaryBg, t.btnPrimaryText, t.btnPrimaryBorder, false), minWidth: 130, opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-            {loading ? "Thinking..." : "AI Name"}
+          <button onClick={getAI} disabled={loading} style={{ ...pillBtn(t.btnPrimaryBg, t.btnPrimaryText, t.btnPrimaryBorder, false), minWidth: 160, opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+            {loading ? "Thinking..." : "AI Generated Name"}
           </button>
-          <button onClick={getRandom} style={{ ...pillBtn(t.btnOutlineBg, t.btnOutlineText, t.btnOutlineBorder, false), minWidth: 130 }}>
-            Random Name
+          <button onClick={getRandom} style={{ ...pillBtn(t.btnOutlineBg, t.btnOutlineText, t.btnOutlineBorder, false), minWidth: 160 }}>
+            Human Generated Name
           </button>
         </div>
 
@@ -174,7 +189,7 @@ export default function Home() {
                 <span style={{ fontSize: 24, fontWeight: 500, color: t.text, lineHeight: 1.3 }}>{currentName}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 11, color: t.textFaint, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                    {source === "ai" ? "AI generated" : "From the list"}
+                    {source === "ai" ? "AI generated" : "Human generated"}
                   </span>
                   <span style={{ color: t.border }}>·</span>
                   <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn(t.btnGhostBg, t.btnGhostText, t.btnGhostBorder, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
