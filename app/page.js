@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 
 const LIST_NAMES = [
@@ -58,26 +56,55 @@ const SHARE_PLATFORMS = [
   { name: "TikTok", fn: (t) => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied! Paste into TikTok."); } },
 ];
 
-const getTheme = () => ({
-  bg:               "#ffffff",
-  surface:          "#f9f9f9",
-  border:           "#e5e5e5",
-  divider:          "#f0f0f0",
-  text:             "#005dff",
-  textMuted:        "#999999",
-  textFaint:        "#aaaaaa",
-  btnPrimaryBg:     "#005dff",
-  btnPrimaryText:   "#ffffff",
-  btnPrimaryBorder: "#005dff",
-  btnOutlineBg:     "#ffffff",
-  btnOutlineText:   "#005dff",
-  btnOutlineBorder: "#005dff",
-  btnGhostBg:       "#ffffff",
-  btnGhostText:     "#555555",
-  btnGhostBorder:   "#cccccc",
+// Blue palette
+const BLUE      = "#005dff";
+const BLUE_10   = "#e5eeff";
+const BLUE_20   = "#ccdaff";
+const BLUE_40   = "#99b5ff";
+
+const pillBtn = (bg, color, border, small) => ({
+  fontFamily: "inherit",
+  fontSize: small ? 12 : 13,
+  fontWeight: 500,
+  textTransform: "uppercase",
+  letterSpacing: "0.1em",
+  borderRadius: 999,
+  padding: small ? "5px 14px" : "9px 22px",
+  cursor: "pointer",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  background: bg,
+  color,
+  border: `${small ? "1.5px" : "2px"} solid ${border}`,
+  outline: "none",
+  whiteSpace: "nowrap",
+  transition: "opacity 0.15s",
+  boxSizing: "border-box",
+  width: "100%",
 });
 
-export default function Home() {
+const styles = `
+  .bng-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: 480px) {
+    .bng-btns {
+      flex-direction: row;
+      justify-content: center;
+    }
+    .bng-btns button {
+      width: auto !important;
+      min-width: 180px;
+    }
+  }
+`;
+
+export default function App() {
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
@@ -85,30 +112,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  const t = getTheme();
-
-  const pillBtn = (bg, color, border, small) => ({
-    fontFamily: "inherit",
-    fontSize: small ? 12 : 13,
-    fontWeight: 500,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
-    borderRadius: 999,
-    padding: small ? "5px 14px" : "9px 22px",
-    cursor: "pointer",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    background: bg,
-    color,
-    border: `${small ? "1.5px" : "2px"} solid ${border}`,
-    outline: "none",
-    whiteSpace: "nowrap",
-    transition: "opacity 0.15s",
-    boxSizing: "border-box",
-  });
 
   const getRandom = () => {
     setCurrentName(LIST_NAMES[Math.floor(Math.random() * LIST_NAMES.length)]);
@@ -123,7 +126,6 @@ export default function Home() {
       const seed = RANDOM_SEEDS[Math.floor(Math.random() * RANDOM_SEEDS.length)];
       const avoidList = aiHistory.slice(-10).join(", ");
       const prompt = `Generate one creative, funny, or absurd band name. Draw loose inspiration from this random theme for variety: "${seed}". The name does NOT need to be literally about that theme — just use it as a creative jumping-off point. Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
-
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -163,84 +165,87 @@ export default function Home() {
   const alreadySaved = currentName && savedNames.includes(currentName);
 
   return (
-    <div style={{ background: t.bg, minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
-      <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "system-ui, sans-serif", textAlign: "center" }}>
+    <>
+      <style>{styles}</style>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
+        <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "system-ui, sans-serif", textAlign: "center" }}>
 
-        <div style={{ marginBottom: "2rem" }}>
-          <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: t.text }}>Band name generator</h1>
-          <p style={{ fontSize: 13, color: t.textMuted, margin: 0 }}>Generate, save, and share band names.</p>
-        </div>
-
-        <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: "2rem" }}>
-          <button onClick={getAI} disabled={loading} style={{ ...pillBtn(t.btnPrimaryBg, t.btnPrimaryText, t.btnPrimaryBorder, false), minWidth: 160, opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-            {loading ? "Thinking..." : "AI Generated Name"}
-          </button>
-          <button onClick={getRandom} style={{ ...pillBtn(t.btnOutlineBg, t.btnOutlineText, t.btnOutlineBorder, false), minWidth: 160 }}>
-            Human Generated Name
-          </button>
-        </div>
-
-        {(currentName || loading) && (
-          <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "2rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
-            {loading ? (
-              <p style={{ fontSize: 13, color: t.textFaint, margin: 0 }}>Generating...</p>
-            ) : (
-              <>
-                <span style={{ fontSize: 24, fontWeight: 500, color: t.text, lineHeight: 1.3 }}>{currentName}</span>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 11, color: t.textFaint, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                    {source === "ai" ? "AI generated" : "Human generated"}
-                  </span>
-                  <span style={{ color: t.border }}>·</span>
-                  <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn(t.btnGhostBg, t.btnGhostText, t.btnGhostBorder, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
-                    {alreadySaved ? "Saved" : "+ Save"}
-                  </button>
-                </div>
-              </>
-            )}
+          <div style={{ marginBottom: "2rem" }}>
+            <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band name generator</h1>
+            <p style={{ fontSize: 13, color: BLUE_40, margin: 0 }}>Generate, save, and share band names.</p>
           </div>
-        )}
 
-        {savedNames.length > 0 && (
-          <div style={{ textAlign: "left" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-              <span style={{ fontSize: 11, fontWeight: 500, color: t.textFaint, letterSpacing: "0.07em", textTransform: "uppercase" }}>
-                Your list — {savedNames.length}
-              </span>
-              <button onClick={() => setShowShare(!showShare)} style={pillBtn(t.btnGhostBg, t.btnGhostText, t.btnGhostBorder, true)}>
-                {showShare ? "Hide" : "Share List"}
-              </button>
-            </div>
+          <div className="bng-btns">
+            <button onClick={getAI} disabled={loading} style={{ ...pillBtn(BLUE, "#fff", BLUE, false), opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+              {loading ? "Thinking..." : "AI Generated Name"}
+            </button>
+            <button onClick={getRandom} style={pillBtn("#fff", BLUE, BLUE, false)}>
+              Human Generated Name
+            </button>
+          </div>
 
-            <div style={{ border: `1px solid ${t.border}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: t.bg }}>
-              {savedNames.map((name, i) => (
-                <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${t.divider}` : "none" }}>
-                  <span style={{ fontSize: 14, color: t.text }}>{name}</span>
-                  <button onClick={() => removeName(name)} style={pillBtn(t.btnGhostBg, t.btnGhostText, t.btnGhostBorder, true)}>Remove</button>
-                </div>
-              ))}
-            </div>
-
-            {showShare && (
-              <div style={{ border: `1px solid ${t.border}`, borderRadius: 14, padding: "1.25rem", background: t.bg }}>
-                <p style={{ fontSize: 11, color: t.textFaint, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
-                  {SHARE_PLATFORMS.map(p => (
-                    <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn(t.btnGhostBg, t.btnGhostText, t.btnGhostBorder, true)}>
-                      {p.name}
+          {(currentName || loading) && (
+            <div style={{ background: BLUE_10, border: `1px solid ${BLUE_20}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "2rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
+              {loading ? (
+                <p style={{ fontSize: 13, color: BLUE_40, margin: 0 }}>Generating...</p>
+              ) : (
+                <>
+                  <span style={{ fontSize: 24, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>{currentName}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 11, color: BLUE_40, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                      {source === "ai" ? "AI generated" : "Human generated"}
+                    </span>
+                    <span style={{ color: BLUE_20 }}>·</span>
+                    <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn(BLUE_10, BLUE, BLUE_40, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
+                      {alreadySaved ? "Saved" : "+ Save"}
                     </button>
-                  ))}
-                </div>
-                <div style={{ borderTop: `1px solid ${t.divider}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
-                  <button onClick={copyAll} style={{ ...pillBtn(t.btnOutlineBg, t.btnOutlineText, t.btnOutlineBorder, false), width: "100%" }}>
-                    {copied ? "Copied!" : "Copy All To Clipboard"}
-                  </button>
-                </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {savedNames.length > 0 && (
+            <div style={{ textAlign: "left" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                <span style={{ fontSize: 11, fontWeight: 500, color: BLUE_40, letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                  Your list — {savedNames.length}
+                </span>
+                <button onClick={() => setShowShare(!showShare)} style={pillBtn(BLUE_10, BLUE, BLUE_20, true)}>
+                  {showShare ? "Hide" : "Share List"}
+                </button>
               </div>
-            )}
-          </div>
-        )}
+
+              <div style={{ border: `1px solid ${BLUE_20}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
+                {savedNames.map((name, i) => (
+                  <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${BLUE_10}` : "none" }}>
+                    <span style={{ fontSize: 14, color: BLUE }}>{name}</span>
+                    <button onClick={() => removeName(name)} style={pillBtn(BLUE_10, BLUE, BLUE_20, true)}>Remove</button>
+                  </div>
+                ))}
+              </div>
+
+              {showShare && (
+                <div style={{ border: `1px solid ${BLUE_20}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
+                  <p style={{ fontSize: 11, color: BLUE_40, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
+                    {SHARE_PLATFORMS.map(p => (
+                      <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn(BLUE_10, BLUE, BLUE_20, true)}>
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ borderTop: `1px solid ${BLUE_20}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
+                    <button onClick={copyAll} style={{ ...pillBtn("#fff", BLUE, BLUE, false), width: "100%" }}>
+                      {copied ? "Copied!" : "Copy All To Clipboard"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
