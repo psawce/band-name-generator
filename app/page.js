@@ -295,7 +295,7 @@ export default function Home() {
         <div style={{ maxWidth: 700, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
 
           <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-            <h1 style={{ fontSize: 22, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band name generator</h1>
+            <h1 style={{ fontSize: 32, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band Name Generator</h1>
             <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
           </div>
 
