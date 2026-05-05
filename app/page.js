@@ -311,24 +311,24 @@ export default function Home() {
           </div>
 
           {/* Shared Result */}
-          <div style={{ background: BLUE_BG, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
+          <div style={{ background: BLUE, border: "none", borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
             {loading ? (
-              <p style={{ fontSize: 13, color: FAINT, margin: 0 }}>Generating...</p>
+              <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
             ) : currentName ? (
               <>
-                <span style={{ fontSize: 24, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>{currentName}</span>
+                <span style={{ fontSize: 24, fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>{currentName}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                  <span style={{ fontSize: 11, color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                     {source === "ai" ? "AI generated" : "Human generated"}
                   </span>
-                  <span style={{ color: BORDER }}>·</span>
-                  <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("#fff", MUTED, BORDER, true), opacity: alreadySaved ? 0.4 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
+                  <span style={{ color: "rgba(255,255,255,0.55)" }}>·</span>
+                  <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("transparent", "#fff", "#fff", true), opacity: alreadySaved ? 0.45 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
                     {alreadySaved ? "Saved" : "+ Save"}
                   </button>
                 </div>
               </>
             ) : (
-              <p style={{ fontSize: 13, color: FAINT, margin: 0 }}>Your band name will appear here.</p>
+              <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Your band name will appear here.</p>
             )}
           </div>
 
