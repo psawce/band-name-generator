@@ -92,15 +92,26 @@ function countWordsInBandName(name) {
 }
 
 const styles = `
+  .bng-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  @media (min-width: 980px) {
+    .bng-shell {
+      flex-direction: row;
+      align-items: stretch;
+      gap: 1.5rem;
+    }
+    .bng-col {
+      width: 50%;
+      min-width: 0;
+    }
+  }
   .bng-cards {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  @media (min-width: 600px) {
-    .bng-cards { flex-direction: row; align-items: stretch; }
-    .bng-card { flex: 1; }
   }
   .bng-card {
     background: #f4f6fc;
@@ -303,143 +314,142 @@ export default function Home() {
     <>
       <style>{styles}</style>
       <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
+        <div style={{ width: "100%", margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
+          <div className="bng-shell">
+            <div className="bng-col">
+              <div style={{ textAlign: "left", marginBottom: "1.5rem" }}>
+                <h1 style={{ fontSize: 32, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band Name Generator</h1>
+                <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
+              </div>
 
-          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-            <h1 style={{ fontSize: 32, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band Name Generator</h1>
-            <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
-          </div>
-
-          {/* Shared Result */}
-          <div style={{ background: BLUE, border: "none", borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
-            {loading ? (
-              <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
-            ) : currentName ? (
-              <>
-                <span style={{ fontSize: 24, fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>{currentName}</span>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 11, color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                    {source === "ai" ? "AI generated" : "Human generated"}
-                  </span>
-                  <span style={{ color: "rgba(255,255,255,0.55)" }}>·</span>
-                  <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("transparent", "#fff", "#fff", true), opacity: alreadySaved ? 0.45 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
-                    {alreadySaved ? "Saved" : "+ Save"}
+              <div className="bng-cards">
+                <div className="bng-card">
+                  <p className="bng-card-label">Human Generated</p>
+                  <select
+                    className={`bng-select${humanWordCount ? " has-value" : ""}`}
+                    value={humanWordCount}
+                    onChange={(e) => setHumanWordCount(e.target.value)}
+                  >
+                    <option value="">Number of words (optional)</option>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={String(n)}>
+                        {n} word{n > 1 ? "s" : ""}
+                      </option>
+                    ))}
+                  </select>
+                  <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
+                    Human Generated Name
                   </button>
                 </div>
-              </>
-            ) : (
-              <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Your band name will appear here.</p>
-            )}
-          </div>
 
-          {/* Two Cards */}
-          <div className="bng-cards">
-
-            {/* Human Card */}
-            <div className="bng-card">
-              <p className="bng-card-label">Human Generated</p>
-              <select
-                className={`bng-select${humanWordCount ? " has-value" : ""}`}
-                value={humanWordCount}
-                onChange={(e) => setHumanWordCount(e.target.value)}
-              >
-                <option value="">Number of words (optional)</option>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={String(n)}>
-                    {n} word{n > 1 ? "s" : ""}
-                  </option>
-                ))}
-              </select>
-              <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
-                Human Generated Name
-              </button>
+                <div className="bng-card">
+                  <p className="bng-card-label">AI Generated</p>
+                  <div style={{ position: "relative" }}>
+                    <input
+                      className="bng-input"
+                      placeholder="Genre (optional)"
+                      value={genre}
+                      onChange={e => handleGenreChange(e.target.value)}
+                      onBlur={() => setTimeout(() => setSuggestions([]), 150)}
+                    />
+                    {suggestions.length > 0 && (
+                      <div className="bng-autocomplete">
+                        {suggestions.map(s => (
+                          <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    className="bng-input"
+                    placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
+                    value={vibe}
+                    onChange={e => setVibe(e.target.value)}
+                  />
+                  <input
+                    className="bng-input"
+                    placeholder="Must include this word (optional)"
+                    value={requiredWord}
+                    onChange={e => setRequiredWord(e.target.value)}
+                  />
+                  <select
+                    className={`bng-select${wordCount ? " has-value" : ""}`}
+                    value={wordCount}
+                    onChange={e => setWordCount(e.target.value)}
+                  >
+                    <option value="">Number of words (optional)</option>
+                    {[1,2,3,4,5,6,7,8].map(n => (
+                      <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
+                    ))}
+                  </select>
+                  <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+                    {loading ? "Thinking..." : "AI Generated Name"}
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* AI Card */}
-            <div className="bng-card">
-              <p className="bng-card-label">AI Generated</p>
-              <div style={{ position: "relative" }}>
-                <input
-                  className="bng-input"
-                  placeholder="Genre (optional)"
-                  value={genre}
-                  onChange={e => handleGenreChange(e.target.value)}
-                  onBlur={() => setTimeout(() => setSuggestions([]), 150)}
-                />
-                {suggestions.length > 0 && (
-                  <div className="bng-autocomplete">
-                    {suggestions.map(s => (
-                      <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
-                    ))}
-                  </div>
+            <div className="bng-col">
+              <div style={{ background: BLUE, border: "none", borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
+                {loading ? (
+                  <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
+                ) : currentName ? (
+                  <>
+                    <span style={{ fontSize: 24, fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>{currentName}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 11, color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                        {source === "ai" ? "AI generated" : "Human generated"}
+                      </span>
+                      <span style={{ color: "rgba(255,255,255,0.55)" }}>·</span>
+                      <button onClick={saveName} disabled={alreadySaved} style={{ ...pillBtn("transparent", "#fff", "#fff", true), opacity: alreadySaved ? 0.45 : 1, cursor: alreadySaved ? "default" : "pointer" }}>
+                        {alreadySaved ? "Saved" : "+ Save"}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Your band name will appear here.</p>
                 )}
               </div>
-              <input
-                className="bng-input"
-                placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
-                value={vibe}
-                onChange={e => setVibe(e.target.value)}
-              />
-              <input
-                className="bng-input"
-                placeholder="Must include this word (optional)"
-                value={requiredWord}
-                onChange={e => setRequiredWord(e.target.value)}
-              />
-              <select
-                className={`bng-select${wordCount ? " has-value" : ""}`}
-                value={wordCount}
-                onChange={e => setWordCount(e.target.value)}
-              >
-                <option value="">Number of words (optional)</option>
-                {[1,2,3,4,5,6,7,8].map(n => (
-                  <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
-                ))}
-              </select>
-              <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-                {loading ? "Thinking..." : "AI Generated Name"}
-              </button>
-            </div>
-          </div>
 
-          {/* Saved List */}
-          {savedNames.length > 0 && (
-            <div style={{ marginTop: "1rem" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-                <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
-                  Your list — {savedNames.length}
-                </span>
-                <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
-                  {showShare ? "Hide" : "Share List"}
-                </button>
-              </div>
-              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
-                {savedNames.map((name, i) => (
-                  <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                    <span style={{ fontSize: 14, color: BLUE }}>{name}</span>
-                    <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
-                  </div>
-                ))}
-              </div>
-              {showShare && (
-                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
-                  <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
-                    {SHARE_PLATFORMS.map(p => (
-                      <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                  <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
-                    <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
-                      {copied ? "Copied!" : "Copy All To Clipboard"}
+              {savedNames.length > 0 && (
+                <div style={{ marginTop: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                    <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                      Your list — {savedNames.length}
+                    </span>
+                    <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                      {showShare ? "Hide" : "Share List"}
                     </button>
                   </div>
+                  <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
+                    {savedNames.map((name, i) => (
+                      <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+                        <span style={{ fontSize: 14, color: BLUE }}>{name}</span>
+                        <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
+                      </div>
+                    ))}
+                  </div>
+                  {showShare && (
+                    <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
+                      <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
+                        {SHARE_PLATFORMS.map(p => (
+                          <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                            {p.name}
+                          </button>
+                        ))}
+                      </div>
+                      <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
+                        <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
+                          {copied ? "Copied!" : "Copy All To Clipboard"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </>
