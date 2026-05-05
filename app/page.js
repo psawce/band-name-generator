@@ -325,13 +325,13 @@ export default function Home() {
       <style>{styles}</style>
       <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
         <div style={{ width: "100%", margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
+          <div style={{ textAlign: "left", marginBottom: "1.5rem" }}>
+            <h1 style={{ fontSize: 32, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band Name Generator</h1>
+            <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
+          </div>
+
           <div className="bng-shell">
             <div className="bng-col">
-              <div style={{ textAlign: "left", marginBottom: "1.5rem" }}>
-                <h1 style={{ fontSize: 32, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band Name Generator</h1>
-                <p style={{ fontSize: 13, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
-              </div>
-
               <div className="bng-cards">
                 <div className="bng-card">
                   <p className="bng-card-label">Human Generated</p>
