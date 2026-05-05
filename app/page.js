@@ -343,7 +343,7 @@ export default function Home() {
                 value={humanWordCount}
                 onChange={(e) => setHumanWordCount(e.target.value)}
               >
-                <option value="">Number of words (any)</option>
+                <option value="">Number of words (optional)</option>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option key={n} value={String(n)}>
                     {n} word{n > 1 ? "s" : ""}
