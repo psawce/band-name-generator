@@ -108,6 +108,13 @@ const styles = `
       min-width: 0;
     }
   }
+  .bng-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .bng-result {
+    flex: 1;
+  }
   .bng-cards {
     display: flex;
     flex-direction: column;
@@ -400,7 +407,7 @@ export default function Home() {
             </div>
 
             <div className="bng-col">
-              <div style={{ background: BLUE, border: "none", borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
+              <div className="bng-result" style={{ background: BLUE, border: "none", borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
                 {loading ? (
                   <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
                 ) : currentName ? (
