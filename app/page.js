@@ -87,6 +87,10 @@ const DIVIDER = "#f0f0f0";
 const MUTED   = "#999999";
 const FAINT   = "#aaaaaa";
 
+function countWordsInBandName(name) {
+  return name.trim().split(/\s+/).filter(Boolean).length;
+}
+
 const styles = `
   .bng-cards {
     display: flex;
@@ -220,6 +224,7 @@ export default function Home() {
   const [genre, setGenre] = useState("");
   const [requiredWord, setRequiredWord] = useState("");
   const [wordCount, setWordCount] = useState("");
+  const [humanWordCount, setHumanWordCount] = useState("");
   const [vibe, setVibe] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -232,7 +237,13 @@ export default function Home() {
   const selectGenre = (g) => { setGenre(g); setSuggestions([]); };
 
   const getRandom = () => {
-    setCurrentName(LIST_NAMES[Math.floor(Math.random() * LIST_NAMES.length)]);
+    let pool = LIST_NAMES;
+    if (humanWordCount) {
+      const n = Number(humanWordCount);
+      pool = LIST_NAMES.filter((name) => countWordsInBandName(name) === n);
+      if (pool.length === 0) pool = LIST_NAMES;
+    }
+    setCurrentName(pool[Math.floor(Math.random() * pool.length)]);
     setSource("human");
   };
 
@@ -327,6 +338,18 @@ export default function Home() {
             {/* Human Card */}
             <div className="bng-card">
               <p className="bng-card-label">Human Generated</p>
+              <select
+                className={`bng-select${humanWordCount ? " has-value" : ""}`}
+                value={humanWordCount}
+                onChange={(e) => setHumanWordCount(e.target.value)}
+              >
+                <option value="">Number of words (any)</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={String(n)}>
+                    {n} word{n > 1 ? "s" : ""}
+                  </option>
+                ))}
+              </select>
               <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
                 Human Generated Name
               </button>
