@@ -113,6 +113,16 @@ const styles = `
     flex-direction: column;
     gap: 1rem;
   }
+  @media (min-width: 1200px) {
+    .bng-cards {
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .bng-card {
+      flex: 1;
+      min-width: 0;
+    }
+  }
   .bng-card {
     background: #f4f6fc;
     border: 1px solid #e5e5e5;
