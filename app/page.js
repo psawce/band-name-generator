@@ -242,6 +242,7 @@ const pillBtn = (bg, color, border, small, full) => ({
 });
 
 export default function Home() {
+  const [activeGeneratorTab, setActiveGeneratorTab] = useState("ai");
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
@@ -341,67 +342,94 @@ export default function Home() {
             <div className="bng-col">
               <div className="bng-cards">
                 <div className="bng-card">
-                  <p className="bng-card-label">Human Generated</p>
-                  <select
-                    className={`bng-select${humanWordCount ? " has-value" : ""}`}
-                    value={humanWordCount}
-                    onChange={(e) => setHumanWordCount(e.target.value)}
-                  >
-                    <option value="">Number of words (optional)</option>
-                    {[1, 2, 3, 4, 5].map((n) => (
-                      <option key={n} value={String(n)}>
-                        {n} word{n > 1 ? "s" : ""}
-                      </option>
-                    ))}
-                  </select>
-                  <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
-                    Human Generated Name
-                  </button>
-                </div>
-
-                <div className="bng-card">
-                  <p className="bng-card-label">AI Generated</p>
-                  <div style={{ position: "relative" }}>
-                    <input
-                      className="bng-input"
-                      placeholder="Genre (optional)"
-                      value={genre}
-                      onChange={e => handleGenreChange(e.target.value)}
-                      onBlur={() => setTimeout(() => setSuggestions([]), 150)}
-                    />
-                    {suggestions.length > 0 && (
-                      <div className="bng-autocomplete">
-                        {suggestions.map(s => (
-                          <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
-                        ))}
-                      </div>
-                    )}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1rem" }}>
+                    <button
+                      onClick={() => setActiveGeneratorTab("ai")}
+                      style={pillBtn(
+                        activeGeneratorTab === "ai" ? BLUE : "#fff",
+                        activeGeneratorTab === "ai" ? "#fff" : BLUE,
+                        BLUE,
+                        true
+                      )}
+                    >
+                      AI Generated
+                    </button>
+                    <button
+                      onClick={() => setActiveGeneratorTab("human")}
+                      style={pillBtn(
+                        activeGeneratorTab === "human" ? BLUE : "#fff",
+                        activeGeneratorTab === "human" ? "#fff" : BLUE,
+                        BLUE,
+                        true
+                      )}
+                    >
+                      Human Generated
+                    </button>
                   </div>
-                  <input
-                    className="bng-input"
-                    placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
-                    value={vibe}
-                    onChange={e => setVibe(e.target.value)}
-                  />
-                  <input
-                    className="bng-input"
-                    placeholder="Must include this word (optional)"
-                    value={requiredWord}
-                    onChange={e => setRequiredWord(e.target.value)}
-                  />
-                  <select
-                    className={`bng-select${wordCount ? " has-value" : ""}`}
-                    value={wordCount}
-                    onChange={e => setWordCount(e.target.value)}
-                  >
-                    <option value="">Number of words (optional)</option>
-                    {[1,2,3,4,5,6,7,8].map(n => (
-                      <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
-                    ))}
-                  </select>
-                  <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-                    {loading ? "Thinking..." : "AI Generated Name"}
-                  </button>
+
+                  {activeGeneratorTab === "ai" ? (
+                    <>
+                      <div style={{ position: "relative" }}>
+                        <input
+                          className="bng-input"
+                          placeholder="Genre (optional)"
+                          value={genre}
+                          onChange={e => handleGenreChange(e.target.value)}
+                          onBlur={() => setTimeout(() => setSuggestions([]), 150)}
+                        />
+                        {suggestions.length > 0 && (
+                          <div className="bng-autocomplete">
+                            {suggestions.map(s => (
+                              <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        className="bng-input"
+                        placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
+                        value={vibe}
+                        onChange={e => setVibe(e.target.value)}
+                      />
+                      <input
+                        className="bng-input"
+                        placeholder="Must include this word (optional)"
+                        value={requiredWord}
+                        onChange={e => setRequiredWord(e.target.value)}
+                      />
+                      <select
+                        className={`bng-select${wordCount ? " has-value" : ""}`}
+                        value={wordCount}
+                        onChange={e => setWordCount(e.target.value)}
+                      >
+                        <option value="">Number of words (optional)</option>
+                        {[1,2,3,4,5,6,7,8].map(n => (
+                          <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
+                        ))}
+                      </select>
+                      <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+                        {loading ? "Thinking..." : "AI Generated Name"}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <select
+                        className={`bng-select${humanWordCount ? " has-value" : ""}`}
+                        value={humanWordCount}
+                        onChange={(e) => setHumanWordCount(e.target.value)}
+                      >
+                        <option value="">Number of words (optional)</option>
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <option key={n} value={String(n)}>
+                            {n} word{n > 1 ? "s" : ""}
+                          </option>
+                        ))}
+                      </select>
+                      <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
+                        Human Generated Name
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
