@@ -242,22 +242,22 @@ const styles = `
     border-bottom: none;
     border-radius: 12px 12px 0 0;
     cursor: pointer;
-    background: linear-gradient(180deg, #f2f5fd 0%, #e9eef9 100%);
-    color: #606a84;
+    background: #fff;
+    color: #005dff;
     outline: none;
     position: relative;
     top: 1px;
     transition: background 0.12s, color 0.12s, transform 0.12s;
   }
   .bng-tab:hover:not(.bng-tab--active) {
-    background: linear-gradient(180deg, #f9fbff 0%, #eef3fc 100%);
-    color: #3e4760;
-  }
-  .bng-tab--active {
     background: #fff;
     color: #005dff;
-    border-color: #e5e5e5;
-    border-bottom: 1px solid #fff;
+  }
+  .bng-tab--active {
+    background: #005dff;
+    color: #fff;
+    border-color: #005dff;
+    border-bottom: 1px solid #005dff;
     top: 1px;
     z-index: 1;
     transform: translateY(-1px);
