@@ -220,13 +220,13 @@ const styles = `
     padding: 0;
     overflow: hidden;
     border-radius: 14px;
-    background: linear-gradient(180deg, #e8edf8 0%, #f4f6fc 42%, #ffffff 42%, #ffffff 100%);
+    background: #fff;
   }
   .bng-tab-strip {
     display: flex;
     align-items: flex-end;
     gap: 4px;
-    padding: 0 10px;
+    padding: 10px 10px 0 10px;
     background: transparent;
     border-bottom: 1px solid #e5e5e5;
   }
@@ -261,7 +261,7 @@ const styles = `
     top: 1px;
     z-index: 1;
     transform: translateY(-1px);
-    box-shadow: 0 -1px 0 #fff, 0 2px 6px rgba(30, 60, 130, 0.08);
+    box-shadow: none;
   }
   .bng-tab-panel {
     background: #fff;
