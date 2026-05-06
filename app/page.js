@@ -486,7 +486,7 @@ export default function Home() {
                           </option>
                         ))}
                       </select>
-                      <button onClick={getRandom} className="bng-btn-full bng-btn-outline">
+                      <button onClick={getRandom} className="bng-btn-full bng-btn-primary">
                         Human Generated Name
                       </button>
                     </>
