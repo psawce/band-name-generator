@@ -397,7 +397,7 @@ export default function Home() {
             <div className="bng-col">
               <div className="bng-cards">
                 <div className="bng-card bng-card-tabbed">
-                  <div className="bng-tab-strip" role="tablist" aria-label="Name source">
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "1rem 1rem 0.75rem" }} role="tablist" aria-label="Name source">
                     <button
                       type="button"
                       role="tab"
@@ -405,7 +405,12 @@ export default function Home() {
                       aria-selected={activeGeneratorTab === "ai"}
                       aria-controls="panel-generator"
                       onClick={() => setActiveGeneratorTab("ai")}
-                      className={`bng-tab${activeGeneratorTab === "ai" ? " bng-tab--active" : ""}`}
+                      style={pillBtn(
+                        activeGeneratorTab === "ai" ? BLUE : "#fff",
+                        activeGeneratorTab === "ai" ? "#fff" : BLUE,
+                        BLUE,
+                        true
+                      )}
                     >
                       AI Generated
                     </button>
@@ -416,7 +421,12 @@ export default function Home() {
                       aria-selected={activeGeneratorTab === "human"}
                       aria-controls="panel-generator"
                       onClick={() => setActiveGeneratorTab("human")}
-                      className={`bng-tab${activeGeneratorTab === "human" ? " bng-tab--active" : ""}`}
+                      style={pillBtn(
+                        activeGeneratorTab === "human" ? BLUE : "#fff",
+                        activeGeneratorTab === "human" ? "#fff" : BLUE,
+                        BLUE,
+                        true
+                      )}
                     >
                       Human Generated
                     </button>
