@@ -216,6 +216,58 @@ const styles = `
   }
   .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
   .bng-btn-outline { background: #fff; color: #005dff; border: 2px solid #005dff; }
+  .bng-card-tabbed {
+    padding: 0;
+    overflow: hidden;
+  }
+  .bng-tab-strip {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 10px 10px 0 10px;
+    background: #e2e6f0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .bng-tab {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 10px 18px 11px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.35);
+    color: #5a6278;
+    outline: none;
+    position: relative;
+    bottom: 0;
+    transition: background 0.12s, color 0.12s;
+  }
+  .bng-tab:hover:not(.bng-tab--active) {
+    background: rgba(255, 255, 255, 0.65);
+    color: #333;
+  }
+  .bng-tab--active {
+    background: #fff;
+    color: #005dff;
+    border-color: #e5e5e5;
+    border-bottom: 1px solid #fff;
+    bottom: -1px;
+    z-index: 1;
+    box-shadow: 0 -1px 0 #fff;
+  }
+  .bng-tab-panel {
+    background: #fff;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
 `;
 
 const pillBtn = (bg, color, border, small, full) => ({
@@ -341,32 +393,38 @@ export default function Home() {
           <div className="bng-shell">
             <div className="bng-col">
               <div className="bng-cards">
-                <div className="bng-card">
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1rem" }}>
+                <div className="bng-card bng-card-tabbed">
+                  <div className="bng-tab-strip" role="tablist" aria-label="Name source">
                     <button
+                      type="button"
+                      role="tab"
+                      id="tab-ai"
+                      aria-selected={activeGeneratorTab === "ai"}
+                      aria-controls="panel-generator"
                       onClick={() => setActiveGeneratorTab("ai")}
-                      style={pillBtn(
-                        activeGeneratorTab === "ai" ? BLUE : "#fff",
-                        activeGeneratorTab === "ai" ? "#fff" : BLUE,
-                        BLUE,
-                        true
-                      )}
+                      className={`bng-tab${activeGeneratorTab === "ai" ? " bng-tab--active" : ""}`}
                     >
                       AI Generated
                     </button>
                     <button
+                      type="button"
+                      role="tab"
+                      id="tab-human"
+                      aria-selected={activeGeneratorTab === "human"}
+                      aria-controls="panel-generator"
                       onClick={() => setActiveGeneratorTab("human")}
-                      style={pillBtn(
-                        activeGeneratorTab === "human" ? BLUE : "#fff",
-                        activeGeneratorTab === "human" ? "#fff" : BLUE,
-                        BLUE,
-                        true
-                      )}
+                      className={`bng-tab${activeGeneratorTab === "human" ? " bng-tab--active" : ""}`}
                     >
                       Human Generated
                     </button>
                   </div>
 
+                  <div
+                    id="panel-generator"
+                    role="tabpanel"
+                    aria-labelledby={activeGeneratorTab === "ai" ? "tab-ai" : "tab-human"}
+                    className="bng-tab-panel"
+                  >
                   {activeGeneratorTab === "ai" ? (
                     <>
                       <div style={{ position: "relative" }}>
@@ -430,6 +488,7 @@ export default function Home() {
                       </button>
                     </>
                   )}
+                  </div>
                 </div>
               </div>
             </div>
