@@ -219,13 +219,15 @@ const styles = `
   .bng-card-tabbed {
     padding: 0;
     overflow: hidden;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #e8edf8 0%, #f4f6fc 42%, #ffffff 42%, #ffffff 100%);
   }
   .bng-tab-strip {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
-    padding: 10px 10px 0 10px;
-    background: #e2e6f0;
+    gap: 4px;
+    padding: 0 10px;
+    background: transparent;
     border-bottom: 1px solid #e5e5e5;
   }
   .bng-tab {
@@ -235,30 +237,31 @@ const styles = `
     letter-spacing: 0.07em;
     text-transform: uppercase;
     padding: 10px 18px 11px;
-    margin: 0;
-    border: 1px solid transparent;
+    margin: 0 0 -1px 0;
+    border: 1px solid #d6dcea;
     border-bottom: none;
-    border-radius: 10px 10px 0 0;
+    border-radius: 12px 12px 0 0;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.35);
-    color: #5a6278;
+    background: linear-gradient(180deg, #f2f5fd 0%, #e9eef9 100%);
+    color: #606a84;
     outline: none;
     position: relative;
-    bottom: 0;
-    transition: background 0.12s, color 0.12s;
+    top: 1px;
+    transition: background 0.12s, color 0.12s, transform 0.12s;
   }
   .bng-tab:hover:not(.bng-tab--active) {
-    background: rgba(255, 255, 255, 0.65);
-    color: #333;
+    background: linear-gradient(180deg, #f9fbff 0%, #eef3fc 100%);
+    color: #3e4760;
   }
   .bng-tab--active {
     background: #fff;
     color: #005dff;
     border-color: #e5e5e5;
     border-bottom: 1px solid #fff;
-    bottom: -1px;
+    top: 1px;
     z-index: 1;
-    box-shadow: 0 -1px 0 #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 -1px 0 #fff, 0 2px 6px rgba(30, 60, 130, 0.08);
   }
   .bng-tab-panel {
     background: #fff;
