@@ -271,6 +271,33 @@ const styles = `
     flex: 1;
     min-height: 0;
   }
+  .bng-source-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 1rem 1rem 0.75rem;
+  }
+  @media (max-width: 979px) {
+    .bng-card-tabbed {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+    }
+    .bng-source-toggle {
+      margin: 0 0 0.75rem;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+    .bng-source-btn {
+      width: 100% !important;
+    }
+    .bng-tab-panel {
+      background: transparent;
+      padding: 0;
+    }
+  }
 `;
 
 const pillBtn = (bg, color, border, small, full) => ({
@@ -397,7 +424,7 @@ export default function Home() {
             <div className="bng-col">
               <div className="bng-cards">
                 <div className="bng-card bng-card-tabbed">
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "1rem 1rem 0.75rem" }} role="tablist" aria-label="Name source">
+                  <div className="bng-source-toggle" role="tablist" aria-label="Name source">
                     <button
                       type="button"
                       role="tab"
@@ -405,6 +432,7 @@ export default function Home() {
                       aria-selected={activeGeneratorTab === "ai"}
                       aria-controls="panel-generator"
                       onClick={() => setActiveGeneratorTab("ai")}
+                      className="bng-source-btn"
                       style={pillBtn(
                         activeGeneratorTab === "ai" ? BLUE : "#fff",
                         activeGeneratorTab === "ai" ? "#fff" : BLUE,
@@ -421,6 +449,7 @@ export default function Home() {
                       aria-selected={activeGeneratorTab === "human"}
                       aria-controls="panel-generator"
                       onClick={() => setActiveGeneratorTab("human")}
+                      className="bng-source-btn"
                       style={pillBtn(
                         activeGeneratorTab === "human" ? BLUE : "#fff",
                         activeGeneratorTab === "human" ? "#fff" : BLUE,
