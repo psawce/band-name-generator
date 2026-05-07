@@ -474,10 +474,13 @@ const styles = `
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
+    width: 100%;
+    box-sizing: border-box;
     margin-bottom: 0.85rem;
     padding: 7px;
     border-radius: 999px;
     background: #fff;
+    border: 1.5px solid #e5e5e5;
     position: relative;
     overflow: hidden;
   }
