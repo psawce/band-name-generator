@@ -477,7 +477,7 @@ const styles = `
     margin-bottom: 0.85rem;
     padding: 7px;
     border-radius: 999px;
-    background: #005dff;
+    background: #fff;
     position: relative;
     overflow: hidden;
   }
@@ -489,7 +489,7 @@ const styles = `
     left: 7px;
     width: calc(50% - 7px);
     border-radius: 999px;
-    background: #fff;
+    background: #005dff;
     transform: translateX(0%);
     transition: transform 0.2s ease;
     z-index: 0;
@@ -502,7 +502,7 @@ const styles = `
     border-radius: 999px;
     border: none;
     background: transparent;
-    color: #fff;
+    color: #005dff;
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
@@ -514,7 +514,7 @@ const styles = `
     transition: color 0.2s ease;
   }
   .bng-mode-btn--active {
-    color: #005dff;
+    color: #fff;
   }
   .bng-control-label {
     font-size: 12px;
