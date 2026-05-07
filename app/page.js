@@ -92,12 +92,103 @@ function countWordsInBandName(name) {
 }
 
 const styles = `
+  .bng-page {
+    background: #fff;
+    min-height: 100vh;
+    padding: 1.25rem 1rem 1.75rem;
+    box-sizing: border-box;
+  }
+  .bng-page-inner {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1120px;
+    font-family: system-ui, sans-serif;
+  }
+  .bng-header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .bng-title {
+    font-size: clamp(1.9rem, 9vw, 2.4rem);
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    color: #005dff;
+    line-height: 1.1;
+  }
+  .bng-subtitle {
+    font-size: 0.94rem;
+    color: #999999;
+    margin: 0;
+  }
   .bng-shell {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
+  }
+  .bng-result-card {
+    background: #005dff;
+    border: none;
+    border-radius: 16px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 0.85rem;
+    min-height: 108px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    text-align: center;
+  }
+  .bng-result-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .bng-list-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+  }
+  .bng-saved-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 13px;
+  }
+  .bng-saved-name {
+    font-size: 14px;
+    color: #005dff;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 640px) {
+    .bng-page {
+      padding: 1.75rem 1.25rem 2rem;
+    }
+    .bng-header {
+      margin-bottom: 1.25rem;
+    }
+    .bng-result-card {
+      padding: 1.5rem 1.25rem;
+      margin-bottom: 1rem;
+      min-height: 120px;
+    }
+    .bng-saved-row {
+      padding: 11px 16px;
+    }
   }
   @media (min-width: 980px) {
+    .bng-page {
+      padding: 2.5rem 1.25rem;
+    }
+    .bng-header {
+      margin-bottom: 1.5rem;
+    }
     .bng-shell {
       flex-direction: row;
       align-items: stretch;
@@ -106,6 +197,13 @@ const styles = `
     .bng-col {
       width: 50%;
       min-width: 0;
+    }
+    .bng-result-card {
+      padding: 1.75rem 1.5rem;
+      min-height: 126px;
+    }
+    .bng-list-header {
+      align-items: center;
     }
   }
   .bng-col {
@@ -149,32 +247,34 @@ const styles = `
   .bng-input {
     width: 100%;
     font-family: inherit;
-    font-size: 14px;
-    padding: 9px 14px;
+    font-size: 16px;
+    padding: 12px 14px;
     border: 1.5px solid #e5e5e5;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
     background: #fff;
     color: #111;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
+    min-height: 46px;
   }
   .bng-input:focus { border-color: #005dff; }
   .bng-input::placeholder { color: #aaa; }
   .bng-select {
     width: 100%;
     font-family: inherit;
-    font-size: 14px;
-    padding: 9px 14px;
+    font-size: 16px;
+    padding: 12px 14px;
     border: 1.5px solid #e5e5e5;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
     background: #fff;
     color: #aaa;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
     appearance: none;
     cursor: pointer;
+    min-height: 46px;
   }
   .bng-select.has-value { color: #111; }
   .bng-select:focus { border-color: #005dff; }
@@ -188,8 +288,8 @@ const styles = `
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
   .bng-autocomplete-item {
-    padding: 9px 14px;
-    font-size: 13px;
+    padding: 11px 14px;
+    font-size: 14px;
     cursor: pointer;
     color: #111;
     border-bottom: 1px solid #f0f0f0;
@@ -198,12 +298,12 @@ const styles = `
   .bng-autocomplete-item:hover { background: #f4f6fc; color: #005dff; }
   .bng-btn-full {
     font-family: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     border-radius: 999px;
-    padding: 9px 22px;
+    padding: 11px 22px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -213,9 +313,13 @@ const styles = `
     box-sizing: border-box;
     width: 100%;
     margin-top: auto;
+    min-height: 46px;
   }
   .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
   .bng-btn-outline { background: #fff; color: #005dff; border: 2px solid #005dff; }
+  .bng-generate-btn {
+    position: relative;
+  }
   .bng-card-tabbed {
     padding: 0;
     overflow: hidden;
@@ -274,7 +378,7 @@ const styles = `
   .bng-source-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin: 1rem 1rem 0.75rem;
   }
   @media (max-width: 979px) {
@@ -292,10 +396,36 @@ const styles = `
     }
     .bng-source-btn {
       width: 100% !important;
+      min-height: 44px;
     }
     .bng-tab-panel {
       background: transparent;
       padding: 0;
+    }
+  }
+  @media (min-width: 768px) {
+    .bng-input,
+    .bng-select {
+      font-size: 14px;
+      padding: 9px 14px;
+      min-height: 40px;
+      margin-bottom: 0.6rem;
+    }
+    .bng-btn-full {
+      font-size: 13px;
+      padding: 9px 22px;
+      min-height: 40px;
+    }
+  }
+  @media (max-width: 479px) {
+    .bng-tab-panel {
+      padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    .bng-generate-btn {
+      position: sticky;
+      bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
+      z-index: 5;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
     }
   }
 `;
@@ -307,7 +437,7 @@ const pillBtn = (bg, color, border, small, full) => ({
   textTransform: "uppercase",
   letterSpacing: "0.1em",
   borderRadius: 999,
-  padding: small ? "5px 14px" : "9px 22px",
+  padding: small ? "8px 14px" : "11px 22px",
   cursor: "pointer",
   display: "inline-flex",
   alignItems: "center",
@@ -321,6 +451,7 @@ const pillBtn = (bg, color, border, small, full) => ({
   transition: "opacity 0.15s",
   boxSizing: "border-box",
   width: full ? "100%" : "auto",
+  minHeight: small ? 36 : 44,
 });
 
 export default function Home() {
@@ -413,11 +544,11 @@ export default function Home() {
   return (
     <>
       <style>{styles}</style>
-      <div style={{ background: "#fff", minHeight: "100vh", padding: "2.5rem 1.25rem", boxSizing: "border-box" }}>
-        <div style={{ width: "100%", margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <h1 style={{ fontSize: 38, fontWeight: 500, margin: "0 0 0.2rem", color: BLUE }}>Band Name Generator</h1>
-            <p style={{ fontSize: 15, color: MUTED, margin: 0 }}>Generate, save, and share band names.</p>
+      <div className="bng-page">
+        <div className="bng-page-inner">
+          <div className="bng-header">
+            <h1 className="bng-title">Band Name Generator</h1>
+            <p className="bng-subtitle">Generate, save, and share band names.</p>
           </div>
 
           <div className="bng-shell">
@@ -507,7 +638,7 @@ export default function Home() {
                           <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
                         ))}
                       </select>
-                      <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
+                      <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary bng-generate-btn" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
                         {loading ? "Thinking..." : "AI Generated Name"}
                       </button>
                     </>
@@ -525,7 +656,7 @@ export default function Home() {
                           </option>
                         ))}
                       </select>
-                      <button onClick={getRandom} className="bng-btn-full bng-btn-primary">
+                      <button onClick={getRandom} className="bng-btn-full bng-btn-primary bng-generate-btn">
                         Human Generated Name
                       </button>
                     </>
@@ -536,13 +667,13 @@ export default function Home() {
             </div>
 
             <div className="bng-col">
-              <div className="bng-result" style={{ background: BLUE, border: "none", borderRadius: 16, padding: "1.75rem 1.5rem", marginBottom: "1rem", minHeight: 100, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center" }}>
+              <div className="bng-result bng-result-card">
                 {loading ? (
                   <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
                 ) : currentName ? (
                   <>
                     <span style={{ fontSize: 24, fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>{currentName}</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div className="bng-result-actions">
                       <span style={{ fontSize: 11, color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                         {source === "ai" ? "AI generated" : "Human generated"}
                       </span>
@@ -559,7 +690,7 @@ export default function Home() {
 
               {savedNames.length > 0 && (
                 <div style={{ marginTop: "1rem" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                  <div className="bng-list-header">
                     <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
                       Your list — {savedNames.length}
                     </span>
@@ -569,8 +700,8 @@ export default function Home() {
                   </div>
                   <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
                     {savedNames.map((name, i) => (
-                      <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 16px", borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                        <span style={{ fontSize: 14, color: BLUE }}>{name}</span>
+                      <div key={name} className="bng-saved-row" style={{ borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+                        <span className="bng-saved-name">{name}</span>
                         <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
                       </div>
                     ))}
