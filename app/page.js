@@ -71,6 +71,156 @@ const RANDOM_SEEDS = [
   "municipal services","vintage board games","diplomatic language","industrial chemicals",
 ];
 
+const HUMAN_NAME_GENRE_BY_NAME = {
+  "Some U.S. Americans": "Political Rap",
+  "Tragically Underseasoned": "Indie Rock",
+  "The Irrelevant Takes": "Post-Punk",
+  "Oblong Ball": "Garage Rock",
+  "Diminished by Sandwiches": "Alternative Rock",
+  "Guar Gum": "Noise Rock",
+  "Independent George": "Art Rock",
+  "The Bitter Clingers": "Punk Rock",
+  "Beer and Pussy": "Hard Rock",
+  "New Potato Adventure": "Psychedelic Rock",
+  "Omlette Bar": "Dance Pop",
+  "Assistant To The Regional Manager": "Indie Pop",
+  "Baked Potato Causeway": "Americana",
+  "That Guy": "Classic Rock",
+  "Surrender Dorothy": "Heartland Rock",
+  "Idea Man": "Synth-pop",
+  "Conjugal Visitors": "Post-Punk",
+  "People Under You": "Alternative Hip-Hop",
+  "Immersion Blender": "Math Rock",
+  "Mitch and Murray": "Jazz Fusion",
+  "Duck Tape": "Garage Rock",
+  "Spider Ricco": "Surf Rock",
+  "The Helsinki Episode": "Art Rock",
+  "Binders Full of Deplorables": "Political Rap",
+  "Concepts of a Plan": "Conscious Rap",
+  "Forget About Him He's Dead": "Goth Rock",
+  "Spread Eagle": "Hard Rock",
+  "The Whole Planet Houston": "Progressive Rock",
+  "I Heard You Were Dead": "Post-Punk",
+  "The President of What": "Alternative Rock",
+  "Shinebox": "Old School Hip-Hop",
+  "The Central Park Karens": "Punk Rock",
+  "Vichyssoise Salad": "Chamber Pop",
+  "Acquiescence Tour": "Dream Pop",
+  "Times New Roman": "Art Pop",
+  "Both Sides": "Soft Rock",
+  "The Internet": "Electropop",
+  "Unified Theory of Everything": "Progressive Rock",
+  "Word Processor": "Synth-pop",
+  "Chef Recommends": "Indie Pop",
+  "Attack / Decay": "Post-Punk",
+  "Backlash": "Punk Rock",
+  "Guns and Provolone": "Hard Rock",
+  "Proper Villains": "Glam Rock",
+  "The Full Ginsberg": "Folk Rock",
+  "Portfolio": "Art Rock",
+  "Team Of Experts": "Alternative Rock",
+  "Very Fine People": "Political Rap",
+  "Nakatomi Plaza": "Synthwave",
+  "Jumbotron": "Arena Rock",
+  "David Pecker": "Garage Rock",
+  "Specific Ocean": "Dream Pop",
+  "Two Corinthians": "Southern Gospel",
+  "Johnny Football Hero": "Heartland Rock",
+  "They Them": "Indie Pop",
+  "Western Beef": "Country Rock",
+  "Bomb Cyclone": "Thrash Metal",
+  "The Kugelmass Episode": "Jazz Rap",
+  "Vassaline": "Dream Pop",
+  "Hostile Womb": "Noise Rock",
+  "Arena Rock": "Arena Rock",
+  "Tiny Holmes": "Baroque Pop",
+  "Roboto Slab": "Industrial",
+  "Danger Robots": "Synth Punk",
+  "Deathbed Motorcycle": "Doom Metal",
+  "I Don't Care About Your Band": "Hardcore Punk",
+  "Launch Procedure": "Techno",
+  "Ministry of Ketchup": "Indie Rock",
+  "Elevator Repair Man": "Post-Punk",
+  "Sorry About Your Daughter": "Emo",
+  "First Blood": "Metalcore",
+  "One Louder": "Hard Rock",
+  "Adult Happy Meal": "Bubblegum Pop",
+  "Sad Desk Lunch": "Lo-fi Hip-Hop",
+  "Charcuterie": "House",
+  "Bespoke Reality": "Art Pop",
+  "Heaven or Las Vegas": "Dream Pop",
+  "Beef Carving Station": "Classic Country",
+  "Situationship": "Contemporary R&B",
+  "Army of Thugs": "Gangsta Rap",
+  "Mike Johnson": "Americana",
+  "Electrolytes": "Electro",
+  "Baller": "Trap",
+  "Kate Blanchet": "Sophisti-pop",
+  "Dangling Modifier": "Math Rock",
+  "Broheim": "Bro-Country",
+  "Cassingle": "Synth-pop",
+  "Prime Rib": "Classic Rock",
+  "Service Dog": "Contemporary Folk",
+  "Bureaucratic Fools": "Conscious Rap",
+  "Fear of Sour Cream": "Post-Punk",
+  "Willy Mammoth": "Stoner Rock",
+  "Whipped Topping": "Dance Pop",
+  "Special Counsel": "Political Rap",
+  "Everywhere Like Such As": "Pop Punk",
+  "Bear Are People In Costume": "Psychedelic Folk",
+  "Irregardless": "Alternative Rock",
+  "The P Drive": "Synthwave",
+  "The Underhill's Bill": "Americana",
+  "Ham On Five": "Funk",
+  "Tight Gripper": "Garage Rock",
+  "Abbey Normal": "Glam Rock",
+  "Steak Sandwich": "Blues Rock",
+  "Everlasting Gobstopper": "Power Pop",
+  "Largesse": "Art Rock",
+  "Jesus H. Christ": "Southern Rock",
+  "Death Is My Exit Strategy": "Post-Rock",
+  "Numbers Game": "Progressive House",
+  "Four Seasons Total Landscaping": "Political Rap",
+  "The Snyder Cut": "Alternative Rock",
+  "Snake Plisken": "Synthwave",
+  "Mo Black's Brother": "Jazz Rap",
+  "The Obscurely Specific": "Post-Punk",
+  "Dave's Killer Bread": "Garage Rock",
+  "The General Collapse of Society": "Crust Punk",
+  "Hillary Industrial Complex": "Industrial",
+  "Sheeple": "Conscious Rap",
+  "Service Merchandise": "Cold Wave",
+  "Sauce": "Trap",
+  "Two Pronged Attack": "Thrash Metal",
+  "Cultured Meat": "Art Pop",
+  "Is This Thing On": "Classic Rock",
+  "Five Point Plan": "Conscious Rap",
+  "Avant Basic": "Art Pop",
+  "Bird Aren't Real": "Indie Rock",
+  "Little Lebowski Overachievers": "Alternative Rock",
+  "Benghazi Plaza": "Political Rap",
+  "The UK Variant": "Post-Punk",
+  "Abner Ravenwood Is Dead": "Goth Rock",
+  "Status Indicator": "Synth-pop",
+  "The Duke of New York": "Glam Rock",
+  "Unlimited Breadsticks": "Dance Pop",
+  "Emergent Social Blistering": "Noise",
+  "Your Own Personal El Guapo": "Surf Rock",
+  "Drugs": "Punk Rock",
+  "Tom Cruise Apologist": "Alternative Rock",
+  "People With Lasers": "Electropop",
+  "Intellectual Zamboni": "Art Rock",
+  "Semantic Apocalypse": "Industrial",
+  "Sunshine Carpet Cleaners": "Indie Pop",
+  "Avocado Toast": "Contemporary Folk",
+  "The Russian Dossier": "Post-Punk",
+};
+
+const HUMAN_NAME_LIBRARY = LIST_NAMES.map((name) => ({
+  name,
+  genre: HUMAN_NAME_GENRE_BY_NAME[name] || "Alternative Rock",
+}));
+
 const SHARE_PLATFORMS = [
   { name: "Messages", fn: (t) => { const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent); if (isMobile) { window.location.href = `sms:?body=${encodeURIComponent(t)}`; } else { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("SMS is only available on mobile. Your list has been copied to clipboard!"); } } },
   { name: "WhatsApp", fn: (t) => { window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, "_blank"); } },
@@ -320,6 +470,61 @@ const styles = `
   .bng-generate-btn {
     position: relative;
   }
+  .bng-mode-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0.85rem;
+  }
+  .bng-mode-btn {
+    flex: 1;
+    min-height: 44px;
+    border-radius: 999px;
+    border: 2px solid #005dff;
+    background: #fff;
+    color: #005dff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .bng-mode-btn--active {
+    background: #005dff;
+    color: #fff;
+  }
+  .bng-control-label {
+    font-size: 11px;
+    color: #999999;
+    margin: 0.1rem 0 0.45rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .bng-wordcount {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+  }
+  .bng-wordcount-btn {
+    min-width: 42px;
+    min-height: 38px;
+    border-radius: 999px;
+    border: 1.5px solid #d6dcea;
+    background: #fff;
+    color: #005dff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+  .bng-wordcount-btn--active {
+    background: #005dff;
+    border-color: #005dff;
+    color: #fff;
+  }
   .bng-card-tabbed {
     padding: 0;
     overflow: hidden;
@@ -455,7 +660,7 @@ const pillBtn = (bg, color, border, small, full) => ({
 });
 
 export default function Home() {
-  const [activeGeneratorTab, setActiveGeneratorTab] = useState("ai");
+  const [generatorMode, setGeneratorMode] = useState("ai");
   const [currentName, setCurrentName] = useState(null);
   const [source, setSource] = useState(null);
   const [savedNames, setSavedNames] = useState([]);
@@ -466,7 +671,6 @@ export default function Home() {
   const [genre, setGenre] = useState("");
   const [requiredWord, setRequiredWord] = useState("");
   const [wordCount, setWordCount] = useState("");
-  const [humanWordCount, setHumanWordCount] = useState("");
   const [vibe, setVibe] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -479,13 +683,42 @@ export default function Home() {
   const selectGenre = (g) => { setGenre(g); setSuggestions([]); };
 
   const getRandom = () => {
-    let pool = LIST_NAMES;
-    if (humanWordCount) {
-      const n = Number(humanWordCount);
-      pool = LIST_NAMES.filter((name) => countWordsInBandName(name) === n);
-      if (pool.length === 0) pool = LIST_NAMES;
+    const normalizedGenre = genre.trim().toLowerCase();
+    const normalizedRequiredWord = requiredWord.trim().toLowerCase();
+    const normalizedVibe = vibe.trim().toLowerCase();
+    const desiredWordCount = wordCount ? Number(wordCount) : null;
+
+    const matches = (entry, options) => {
+      if (options.genre && entry.genre.toLowerCase() !== normalizedGenre) return false;
+      if (options.wordCount && countWordsInBandName(entry.name) !== desiredWordCount) return false;
+      if (options.requiredWord && !entry.name.toLowerCase().includes(normalizedRequiredWord)) return false;
+      if (options.vibe && !`${entry.name} ${entry.genre}`.toLowerCase().includes(normalizedVibe)) return false;
+      return true;
+    };
+
+    const tiers = [
+      { genre: !!normalizedGenre, wordCount: !!desiredWordCount, requiredWord: !!normalizedRequiredWord, vibe: !!normalizedVibe },
+      { genre: !!normalizedGenre, wordCount: !!desiredWordCount, requiredWord: !!normalizedRequiredWord, vibe: false },
+      { genre: !!normalizedGenre, wordCount: !!desiredWordCount, requiredWord: false, vibe: !!normalizedVibe },
+      { genre: !!normalizedGenre, wordCount: !!desiredWordCount, requiredWord: false, vibe: false },
+      { genre: !!normalizedGenre, wordCount: false, requiredWord: !!normalizedRequiredWord, vibe: false },
+      { genre: !!normalizedGenre, wordCount: false, requiredWord: false, vibe: false },
+      { genre: false, wordCount: !!desiredWordCount, requiredWord: !!normalizedRequiredWord, vibe: !!normalizedVibe },
+      { genre: false, wordCount: !!desiredWordCount, requiredWord: !!normalizedRequiredWord, vibe: false },
+      { genre: false, wordCount: !!desiredWordCount, requiredWord: false, vibe: false },
+      { genre: false, wordCount: false, requiredWord: !!normalizedRequiredWord, vibe: false },
+      { genre: false, wordCount: false, requiredWord: false, vibe: !!normalizedVibe },
+      { genre: false, wordCount: false, requiredWord: false, vibe: false },
+    ];
+
+    let pool = [];
+    for (const tier of tiers) {
+      pool = HUMAN_NAME_LIBRARY.filter((entry) => matches(entry, tier));
+      if (pool.length > 0) break;
     }
-    setCurrentName(pool[Math.floor(Math.random() * pool.length)]);
+
+    const selection = pool[Math.floor(Math.random() * pool.length)];
+    setCurrentName(selection.name);
     setSource("human");
   };
 
@@ -500,7 +733,7 @@ export default function Home() {
       if (genre) prompt += ` The band plays ${genre} music — let the genre subtly influence the name's tone or style.`;
       if (vibe) prompt += ` The overall vibe or feeling of the name should be: "${vibe}".`;
       if (requiredWord) prompt += ` The band name MUST include the word "${requiredWord}".`;
-      if (wordCount) prompt += ` The band name MUST be exactly ${wordCount} word${wordCount === "1" ? "" : "s"} long.`;
+      if (wordCount) prompt += ` The band name MUST be exactly ${wordCount} word${wordCount === "1" ? "" : "s"} long, with a maximum of 6 words.`;
       if (!genre && !requiredWord && !vibe && !wordCount) prompt += ` Draw loose inspiration from this random theme for variety: "${seed}".`;
       prompt += ` Do NOT use any of these recently generated names or repeat their words: ${avoidList || "none yet"}. Reply with ONLY the band name — no explanation, no punctuation at the end, no quotes.`;
       const res = await fetch("/api/generate", {
@@ -554,113 +787,89 @@ export default function Home() {
           <div className="bng-shell">
             <div className="bng-col">
               <div className="bng-cards">
-                <div className="bng-card bng-card-tabbed">
-                  <div className="bng-source-toggle" role="tablist" aria-label="Name source">
+                <div className="bng-card">
+                  <div className="bng-mode-toggle" role="radiogroup" aria-label="Name source">
                     <button
                       type="button"
-                      role="tab"
-                      id="tab-ai"
-                      aria-selected={activeGeneratorTab === "ai"}
-                      aria-controls="panel-generator"
-                      onClick={() => setActiveGeneratorTab("ai")}
-                      className="bng-source-btn"
-                      style={pillBtn(
-                        activeGeneratorTab === "ai" ? BLUE : "#fff",
-                        activeGeneratorTab === "ai" ? "#fff" : BLUE,
-                        BLUE,
-                        true
-                      )}
+                      role="radio"
+                      aria-checked={generatorMode === "ai"}
+                      onClick={() => setGeneratorMode("ai")}
+                      className={`bng-mode-btn${generatorMode === "ai" ? " bng-mode-btn--active" : ""}`}
                     >
                       AI Generated
                     </button>
                     <button
                       type="button"
-                      role="tab"
-                      id="tab-human"
-                      aria-selected={activeGeneratorTab === "human"}
-                      aria-controls="panel-generator"
-                      onClick={() => setActiveGeneratorTab("human")}
-                      className="bng-source-btn"
-                      style={pillBtn(
-                        activeGeneratorTab === "human" ? BLUE : "#fff",
-                        activeGeneratorTab === "human" ? "#fff" : BLUE,
-                        BLUE,
-                        true
-                      )}
+                      role="radio"
+                      aria-checked={generatorMode === "human"}
+                      onClick={() => setGeneratorMode("human")}
+                      className={`bng-mode-btn${generatorMode === "human" ? " bng-mode-btn--active" : ""}`}
                     >
                       Human Generated
                     </button>
                   </div>
 
-                  <div
-                    id="panel-generator"
-                    role="tabpanel"
-                    aria-labelledby={activeGeneratorTab === "ai" ? "tab-ai" : "tab-human"}
-                    className="bng-tab-panel"
-                  >
-                  {activeGeneratorTab === "ai" ? (
-                    <>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          className="bng-input"
-                          placeholder="Genre (optional)"
-                          value={genre}
-                          onChange={e => handleGenreChange(e.target.value)}
-                          onBlur={() => setTimeout(() => setSuggestions([]), 150)}
-                        />
-                        {suggestions.length > 0 && (
-                          <div className="bng-autocomplete">
-                            {suggestions.map(s => (
-                              <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                  <div className="bng-tab-panel">
+                    <div style={{ position: "relative" }}>
                       <input
                         className="bng-input"
-                        placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
-                        value={vibe}
-                        onChange={e => setVibe(e.target.value)}
+                        placeholder="Genre (optional)"
+                        value={genre}
+                        onChange={e => handleGenreChange(e.target.value)}
+                        onBlur={() => setTimeout(() => setSuggestions([]), 150)}
                       />
-                      <input
-                        className="bng-input"
-                        placeholder="Must include this word (optional)"
-                        value={requiredWord}
-                        onChange={e => setRequiredWord(e.target.value)}
-                      />
-                      <select
-                        className={`bng-select${wordCount ? " has-value" : ""}`}
-                        value={wordCount}
-                        onChange={e => setWordCount(e.target.value)}
+                      {suggestions.length > 0 && (
+                        <div className="bng-autocomplete">
+                          {suggestions.map(s => (
+                            <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      className="bng-input"
+                      placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
+                      value={vibe}
+                      onChange={e => setVibe(e.target.value)}
+                    />
+                    <input
+                      className="bng-input"
+                      placeholder="Must include this word (optional)"
+                      value={requiredWord}
+                      onChange={e => setRequiredWord(e.target.value)}
+                    />
+                    <p className="bng-control-label">Number of words (optional, max 6)</p>
+                    <div className="bng-wordcount" role="radiogroup" aria-label="Number of words">
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={!wordCount}
+                        onClick={() => setWordCount("")}
+                        className={`bng-wordcount-btn${!wordCount ? " bng-wordcount-btn--active" : ""}`}
                       >
-                        <option value="">Number of words (optional)</option>
-                        {[1,2,3,4,5,6,7,8].map(n => (
-                          <option key={n} value={n}>{n} word{n > 1 ? "s" : ""}</option>
-                        ))}
-                      </select>
-                      <button onClick={getAI} disabled={loading} className="bng-btn-full bng-btn-primary bng-generate-btn" style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}>
-                        {loading ? "Thinking..." : "AI Generated Name"}
+                        Any
                       </button>
-                    </>
-                  ) : (
-                    <>
-                      <select
-                        className={`bng-select${humanWordCount ? " has-value" : ""}`}
-                        value={humanWordCount}
-                        onChange={(e) => setHumanWordCount(e.target.value)}
-                      >
-                        <option value="">Number of words (optional)</option>
-                        {[1, 2, 3, 4, 5].map((n) => (
-                          <option key={n} value={String(n)}>
-                            {n} word{n > 1 ? "s" : ""}
-                          </option>
-                        ))}
-                      </select>
-                      <button onClick={getRandom} className="bng-btn-full bng-btn-primary bng-generate-btn">
-                        Human Generated Name
-                      </button>
-                    </>
-                  )}
+                      {[1, 2, 3, 4, 5, 6].map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          role="radio"
+                          aria-checked={wordCount === String(n)}
+                          onClick={() => setWordCount(String(n))}
+                          className={`bng-wordcount-btn${wordCount === String(n) ? " bng-wordcount-btn--active" : ""}`}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={generatorMode === "ai" ? getAI : getRandom}
+                      disabled={loading}
+                      className="bng-btn-full bng-btn-primary bng-generate-btn"
+                      style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}
+                    >
+                      {loading ? "Thinking..." : generatorMode === "ai" ? "AI Generated Name" : "Human Generated Name"}
+                    </button>
                   </div>
                 </div>
               </div>
