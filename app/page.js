@@ -379,10 +379,10 @@ const styles = `
     }
   }
   .bng-card {
-    background: #f4f6fc;
-    border: 1px solid #e5e5e5;
+    background: transparent;
+    border: none;
     border-radius: 16px;
-    padding: 1.25rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
   }
