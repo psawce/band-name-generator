@@ -463,7 +463,7 @@ const styles = `
     box-sizing: border-box;
     width: 100%;
     margin-top: auto;
-    min-height: 46px;
+    min-height: 56px;
   }
   .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
   .bng-btn-outline { background: #fff; color: #005dff; border: 2px solid #005dff; }
@@ -471,27 +471,50 @@ const styles = `
     position: relative;
   }
   .bng-mode-toggle {
-    display: flex;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
     margin-bottom: 0.85rem;
+    padding: 7px;
+    border-radius: 999px;
+    background: #005dff;
+    position: relative;
+    overflow: hidden;
+  }
+  .bng-mode-toggle::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    bottom: 7px;
+    left: 7px;
+    width: calc(50% - 7px);
+    border-radius: 999px;
+    background: #fff;
+    transform: translateX(0%);
+    transition: transform 0.2s ease;
+    z-index: 0;
+  }
+  .bng-mode-toggle[data-mode="human"]::before {
+    transform: translateX(100%);
   }
   .bng-mode-btn {
-    flex: 1;
-    min-height: 44px;
+    min-height: 48px;
     border-radius: 999px;
-    border: 2px solid #005dff;
-    background: #fff;
-    color: #005dff;
+    border: none;
+    background: transparent;
+    color: #fff;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: color 0.2s ease;
   }
   .bng-mode-btn--active {
-    background: #005dff;
-    color: #fff;
+    color: #005dff;
   }
   .bng-control-label {
     font-size: 11px;
@@ -619,7 +642,7 @@ const styles = `
     .bng-btn-full {
       font-size: 13px;
       padding: 9px 22px;
-      min-height: 40px;
+      min-height: 50px;
     }
   }
   @media (max-width: 479px) {
@@ -681,6 +704,16 @@ export default function Home() {
   };
 
   const selectGenre = (g) => { setGenre(g); setSuggestions([]); };
+
+  const handleModeKeyDown = (event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      setGeneratorMode("human");
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      setGeneratorMode("ai");
+    }
+  };
 
   const getRandom = () => {
     const normalizedGenre = genre.trim().toLowerCase();
@@ -788,11 +821,18 @@ export default function Home() {
             <div className="bng-col">
               <div className="bng-cards">
                 <div className="bng-card">
-                  <div className="bng-mode-toggle" role="radiogroup" aria-label="Name source">
+                  <div
+                    className="bng-mode-toggle"
+                    data-mode={generatorMode}
+                    role="radiogroup"
+                    aria-label="Name source"
+                    onKeyDown={handleModeKeyDown}
+                  >
                     <button
                       type="button"
                       role="radio"
                       aria-checked={generatorMode === "ai"}
+                      tabIndex={generatorMode === "ai" ? 0 : -1}
                       onClick={() => setGeneratorMode("ai")}
                       className={`bng-mode-btn${generatorMode === "ai" ? " bng-mode-btn--active" : ""}`}
                     >
@@ -802,6 +842,7 @@ export default function Home() {
                       type="button"
                       role="radio"
                       aria-checked={generatorMode === "human"}
+                      tabIndex={generatorMode === "human" ? 0 : -1}
                       onClick={() => setGeneratorMode("human")}
                       className={`bng-mode-btn${generatorMode === "human" ? " bng-mode-btn--active" : ""}`}
                     >
@@ -868,7 +909,7 @@ export default function Home() {
                       className="bng-btn-full bng-btn-primary bng-generate-btn"
                       style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}
                     >
-                      {loading ? "Thinking..." : generatorMode === "ai" ? "AI Generated Name" : "Human Generated Name"}
+                      {loading ? "Thinking..." : "Generate Name"}
                     </button>
                   </div>
                 </div>
