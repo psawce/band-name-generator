@@ -600,7 +600,7 @@ const styles = `
   }
   .bng-tab-panel {
     background: #fff;
-    padding: 1.25rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
     flex: 1;
