@@ -517,10 +517,10 @@ const styles = `
     color: #005dff;
   }
   .bng-control-label {
-    font-size: 11px;
-    color: #999999;
-    margin: 0.1rem 0 0.45rem;
-    letter-spacing: 0.06em;
+    font-size: 12px;
+    color: #005dff;
+    margin: 20px 0 8px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: 600;
   }
@@ -528,7 +528,7 @@ const styles = `
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 20px;
   }
   .bng-wordcount-btn {
     min-width: 42px;
