@@ -232,7 +232,7 @@ const SHARE_PLATFORMS = [
 
 const BLUE    = "#005dff";
 const BLUE_BG = "#f4f6fc";
-const BORDER  = "#005dff";
+const BORDER  = "#e5e5e5";
 const DIVIDER = "#f0f0f0";
 const MUTED   = "#999999";
 const FAINT   = "#aaaaaa";
@@ -408,7 +408,7 @@ const styles = `
     font-family: inherit;
     font-size: 16px;
     padding: 12px 14px;
-    border: 1.5px solid #005dff;
+    border: 1.5px solid #e5e5e5;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
@@ -424,7 +424,7 @@ const styles = `
     font-family: inherit;
     font-size: 16px;
     padding: 12px 14px;
-    border: 1.5px solid #005dff;
+    border: 1.5px solid #e5e5e5;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
@@ -439,7 +439,7 @@ const styles = `
   .bng-select:focus { border-color: #005dff; }
   .bng-autocomplete {
     background: #fff;
-    border: 1.5px solid #005dff;
+    border: 1.5px solid #e5e5e5;
     border-radius: 12px;
     max-height: 160px;
     overflow-y: auto;
@@ -489,7 +489,7 @@ const styles = `
     padding: 7px;
     border-radius: 999px;
     background: #fff;
-    border: 1.5px solid #005dff;
+    border: 1.5px solid #e5e5e5;
     position: relative;
     overflow: hidden;
   }
@@ -546,7 +546,7 @@ const styles = `
     min-width: 42px;
     min-height: 38px;
     border-radius: 999px;
-    border: 1.5px solid #005dff;
+    border: 1.5px solid #d6dcea;
     background: #fff;
     color: #005dff;
     font-family: inherit;
@@ -572,7 +572,7 @@ const styles = `
     gap: 4px;
     padding: 10px 10px 0 10px;
     background: transparent;
-    border-bottom: 1px solid #005dff;
+    border-bottom: 1px solid #e5e5e5;
   }
   .bng-tab {
     font-family: inherit;
@@ -582,7 +582,7 @@ const styles = `
     text-transform: uppercase;
     padding: 10px 18px 11px;
     margin: 0 0 -1px 0;
-    border: 1px solid #005dff;
+    border: 1px solid #d6dcea;
     border-bottom: none;
     border-radius: 12px 12px 0 0;
     cursor: pointer;
