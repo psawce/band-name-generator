@@ -257,10 +257,11 @@ const styles = `
   }
   .bng-header {
     text-align: center;
+    padding: 0.5rem 0 0.9rem;
     margin-bottom: 1rem;
   }
   .bng-title {
-    font-size: clamp(1.55rem, 7.5vw, 2.4rem);
+    font-size: clamp(1.4rem, 6.8vw, 2.4rem);
     font-weight: 500;
     margin: 0 0 0.25rem;
     color: #005dff;
