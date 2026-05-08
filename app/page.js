@@ -608,7 +608,7 @@ const styles = `
     box-shadow: none;
   }
   .bng-tab-panel {
-    background: #fff;
+    background: transparent;
     padding: 0;
     display: flex;
     flex-direction: column;
