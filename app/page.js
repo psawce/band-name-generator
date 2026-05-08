@@ -275,6 +275,17 @@ const styles = `
     flex-direction: column;
     gap: 1rem;
   }
+  .bng-block--result .bng-result-card {
+    margin-bottom: 0;
+  }
+  .bng-block--result {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .bng-block--fields {
+    min-width: 0;
+  }
   .bng-result-card {
     background: #005dff;
     border: none;
@@ -325,7 +336,6 @@ const styles = `
     }
     .bng-result-card {
       padding: 1.5rem 1.25rem;
-      margin-bottom: 1rem;
       min-height: 120px;
     }
     .bng-saved-row {
@@ -340,52 +350,48 @@ const styles = `
       margin-bottom: 1.5rem;
     }
     .bng-shell {
-      flex-direction: row;
-      align-items: stretch;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
       gap: 1.5rem;
+      align-items: stretch;
     }
-    .bng-col {
-      width: 50%;
+    .bng-block--toggle {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .bng-block--fields {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .bng-block--generate {
+      grid-column: 1;
+      grid-row: 3;
+    }
+    .bng-block--result {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      min-height: 0;
+      align-self: stretch;
+      height: 100%;
+    }
+    .bng-block--saved {
+      grid-column: 2;
+      grid-row: 4;
       min-width: 0;
     }
-    .bng-shell > .bng-col:last-child {
-      flex: 1 1 50%;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-    .bng-result.bng-result-card {
+    .bng-block--result .bng-result.bng-result-card {
       flex: 1 1 0;
       min-height: 126px;
-      margin-bottom: 0;
-      align-self: stretch;
+      height: 100%;
       padding: 1.75rem 1.5rem;
     }
     .bng-list-header {
       align-items: center;
     }
   }
-  .bng-col {
-    display: flex;
-    flex-direction: column;
-  }
   .bng-result {
     flex: 1;
-  }
-  .bng-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  @media (min-width: 1200px) {
-    .bng-cards {
-      flex-direction: row;
-      align-items: stretch;
-    }
-    .bng-card {
-      flex: 1;
-      min-width: 0;
-    }
   }
   .bng-card {
     background: transparent;
@@ -476,9 +482,6 @@ const styles = `
   }
   .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
   .bng-btn-outline { background: #fff; color: #005dff; border: 2px solid #005dff; }
-  .bng-generate-btn {
-    position: relative;
-  }
   .bng-mode-toggle {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -657,17 +660,6 @@ const styles = `
       min-height: 50px;
     }
   }
-  @media (max-width: 479px) {
-    .bng-tab-panel {
-      padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px)) !important;
-    }
-    .bng-generate-btn {
-      position: sticky;
-      bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
-      z-index: 5;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    }
-  }
 `;
 
 const pillBtn = (bg, color, border, small, full) => ({
@@ -830,105 +822,7 @@ export default function Home() {
           </div>
 
           <div className="bng-shell">
-            <div className="bng-col">
-              <div className="bng-cards">
-                <div className="bng-card">
-                  <div
-                    className="bng-mode-toggle"
-                    data-mode={generatorMode}
-                    role="radiogroup"
-                    aria-label="Name source"
-                    onKeyDown={handleModeKeyDown}
-                  >
-                    <button
-                      type="button"
-                      role="radio"
-                      aria-checked={generatorMode === "ai"}
-                      tabIndex={generatorMode === "ai" ? 0 : -1}
-                      onClick={() => setGeneratorMode("ai")}
-                      className={`bng-mode-btn${generatorMode === "ai" ? " bng-mode-btn--active" : ""}`}
-                    >
-                      AI Generated
-                    </button>
-                    <button
-                      type="button"
-                      role="radio"
-                      aria-checked={generatorMode === "human"}
-                      tabIndex={generatorMode === "human" ? 0 : -1}
-                      onClick={() => setGeneratorMode("human")}
-                      className={`bng-mode-btn${generatorMode === "human" ? " bng-mode-btn--active" : ""}`}
-                    >
-                      Human Generated
-                    </button>
-                  </div>
-
-                  <div className="bng-tab-panel">
-                    <div style={{ position: "relative" }}>
-                      <input
-                        className="bng-input"
-                        placeholder="Genre (optional)"
-                        value={genre}
-                        onChange={e => handleGenreChange(e.target.value)}
-                        onBlur={() => setTimeout(() => setSuggestions([]), 150)}
-                      />
-                      {suggestions.length > 0 && (
-                        <div className="bng-autocomplete">
-                          {suggestions.map(s => (
-                            <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      className="bng-input"
-                      placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
-                      value={vibe}
-                      onChange={e => setVibe(e.target.value)}
-                    />
-                    <input
-                      className="bng-input"
-                      placeholder="Must include this word (optional)"
-                      value={requiredWord}
-                      onChange={e => setRequiredWord(e.target.value)}
-                    />
-                    <p className="bng-control-label">Number of words (optional, max 6)</p>
-                    <div className="bng-wordcount" role="radiogroup" aria-label="Number of words">
-                      <button
-                        type="button"
-                        role="radio"
-                        aria-checked={!wordCount}
-                        onClick={() => setWordCount("")}
-                        className={`bng-wordcount-btn${!wordCount ? " bng-wordcount-btn--active" : ""}`}
-                      >
-                        Any
-                      </button>
-                      {[1, 2, 3, 4, 5, 6].map((n) => (
-                        <button
-                          key={n}
-                          type="button"
-                          role="radio"
-                          aria-checked={wordCount === String(n)}
-                          onClick={() => setWordCount(String(n))}
-                          className={`bng-wordcount-btn${wordCount === String(n) ? " bng-wordcount-btn--active" : ""}`}
-                        >
-                          {n}
-                        </button>
-                      ))}
-                    </div>
-                    <button
-                      onClick={generatorMode === "ai" ? getAI : getRandom}
-                      disabled={loading}
-                      className="bng-btn-full bng-btn-primary bng-generate-btn"
-                      style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}
-                    >
-                      {loading ? "Thinking..." : "Generate Name"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bng-col">
+            <div className="bng-block bng-block--result">
               <div className="bng-result bng-result-card">
                 {loading ? (
                   <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
@@ -949,45 +843,145 @@ export default function Home() {
                   <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Your band name will appear here.</p>
                 )}
               </div>
+            </div>
 
-              {savedNames.length > 0 && (
-                <div style={{ marginTop: "1rem" }}>
-                  <div className="bng-list-header">
-                    <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
-                      Your list — {savedNames.length}
-                    </span>
-                    <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
-                      {showShare ? "Hide" : "Share List"}
-                    </button>
-                  </div>
-                  <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
-                    {savedNames.map((name, i) => (
-                      <div key={name} className="bng-saved-row" style={{ borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                        <span className="bng-saved-name">{name}</span>
-                        <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
-                      </div>
-                    ))}
-                  </div>
-                  {showShare && (
-                    <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
-                      <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
-                        {SHARE_PLATFORMS.map(p => (
-                          <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
-                            {p.name}
-                          </button>
-                        ))}
-                      </div>
-                      <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
-                        <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
-                          {copied ? "Copied!" : "Copy All To Clipboard"}
-                        </button>
-                      </div>
+            <div className="bng-block bng-block--generate">
+              <button
+                type="button"
+                onClick={generatorMode === "ai" ? getAI : getRandom}
+                disabled={loading}
+                className="bng-btn-full bng-btn-primary"
+                style={{ opacity: loading ? 0.5 : 1, cursor: loading ? "default" : "pointer" }}
+              >
+                {loading ? "Thinking..." : "Generate Name"}
+              </button>
+            </div>
+
+            <div className="bng-block bng-block--toggle">
+              <div
+                className="bng-mode-toggle"
+                data-mode={generatorMode}
+                role="radiogroup"
+                aria-label="Name source"
+                onKeyDown={handleModeKeyDown}
+              >
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={generatorMode === "ai"}
+                  tabIndex={generatorMode === "ai" ? 0 : -1}
+                  onClick={() => setGeneratorMode("ai")}
+                  className={`bng-mode-btn${generatorMode === "ai" ? " bng-mode-btn--active" : ""}`}
+                >
+                  AI Generated
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={generatorMode === "human"}
+                  tabIndex={generatorMode === "human" ? 0 : -1}
+                  onClick={() => setGeneratorMode("human")}
+                  className={`bng-mode-btn${generatorMode === "human" ? " bng-mode-btn--active" : ""}`}
+                >
+                  Human Generated
+                </button>
+              </div>
+            </div>
+
+            <div className="bng-block bng-block--fields">
+              <div className="bng-tab-panel">
+                <div style={{ position: "relative" }}>
+                  <input
+                    className="bng-input"
+                    placeholder="Genre (optional)"
+                    value={genre}
+                    onChange={e => handleGenreChange(e.target.value)}
+                    onBlur={() => setTimeout(() => setSuggestions([]), 150)}
+                  />
+                  {suggestions.length > 0 && (
+                    <div className="bng-autocomplete">
+                      {suggestions.map(s => (
+                        <div key={s} className="bng-autocomplete-item" onMouseDown={() => selectGenre(s)}>{s}</div>
+                      ))}
                     </div>
                   )}
                 </div>
-              )}
+                <input
+                  className="bng-input"
+                  placeholder="Vibe or mood, e.g. Angry, Mellow (optional)"
+                  value={vibe}
+                  onChange={e => setVibe(e.target.value)}
+                />
+                <input
+                  className="bng-input"
+                  placeholder="Must include this word (optional)"
+                  value={requiredWord}
+                  onChange={e => setRequiredWord(e.target.value)}
+                />
+                <p className="bng-control-label">Number of words (optional, max 6)</p>
+                <div className="bng-wordcount" role="radiogroup" aria-label="Number of words">
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={!wordCount}
+                    onClick={() => setWordCount("")}
+                    className={`bng-wordcount-btn${!wordCount ? " bng-wordcount-btn--active" : ""}`}
+                  >
+                    Any
+                  </button>
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      role="radio"
+                      aria-checked={wordCount === String(n)}
+                      onClick={() => setWordCount(String(n))}
+                      className={`bng-wordcount-btn${wordCount === String(n) ? " bng-wordcount-btn--active" : ""}`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
+
+            {savedNames.length > 0 && (
+              <div className="bng-block bng-block--saved">
+                <div className="bng-list-header">
+                  <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                    Your list — {savedNames.length}
+                  </span>
+                  <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                    {showShare ? "Hide" : "Share List"}
+                  </button>
+                </div>
+                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
+                  {savedNames.map((name, i) => (
+                    <div key={name} className="bng-saved-row" style={{ borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+                      <span className="bng-saved-name">{name}</span>
+                      <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
+                    </div>
+                  ))}
+                </div>
+                {showShare && (
+                  <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
+                    <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
+                      {SHARE_PLATFORMS.map(p => (
+                        <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
+                      <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
+                        {copied ? "Copied!" : "Copy All To Clipboard"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
