@@ -247,6 +247,7 @@ const styles = `
     min-height: 100vh;
     padding: 1.25rem 1rem 1.75rem;
     box-sizing: border-box;
+    touch-action: pan-y;
   }
   .bng-page-inner {
     width: 100%;
@@ -259,7 +260,7 @@ const styles = `
     margin-bottom: 1rem;
   }
   .bng-title {
-    font-size: clamp(1.9rem, 9vw, 2.4rem);
+    font-size: clamp(1.55rem, 7.5vw, 2.4rem);
     font-weight: 500;
     margin: 0 0 0.25rem;
     color: #005dff;
@@ -274,6 +275,7 @@ const styles = `
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    touch-action: pan-y;
   }
   .bng-block--result .bng-result-card {
     margin-bottom: 0;
@@ -493,6 +495,7 @@ const styles = `
     border: 1.5px solid #e5e5e5;
     position: relative;
     overflow: hidden;
+    touch-action: pan-y;
   }
   .bng-mode-toggle::before {
     content: "";
@@ -542,6 +545,7 @@ const styles = `
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 20px;
+    touch-action: pan-y;
   }
   .bng-wordcount-btn {
     min-width: 42px;

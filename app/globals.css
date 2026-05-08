@@ -6,4 +6,6 @@ html,
 body {
   background-color: #f0f6ff;
   min-height: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
 }
