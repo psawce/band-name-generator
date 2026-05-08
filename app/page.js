@@ -447,8 +447,6 @@ const styles = `
     background: #fff;
     border: 1.5px solid #e5e5e5;
     border-radius: 12px;
-    max-height: 160px;
-    overflow-y: auto;
     margin-bottom: 0.6rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
