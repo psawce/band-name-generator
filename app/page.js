@@ -243,7 +243,7 @@ function countWordsInBandName(name) {
 
 const styles = `
   .bng-page {
-    background: #fff;
+    background: #f0f6ff;
     min-height: 100vh;
     padding: 1.25rem 1rem 1.75rem;
     box-sizing: border-box;
@@ -348,9 +348,18 @@ const styles = `
       width: 50%;
       min-width: 0;
     }
-    .bng-result-card {
-      padding: 1.75rem 1.5rem;
+    .bng-shell > .bng-col:last-child {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .bng-result.bng-result-card {
+      flex: 1 1 0;
       min-height: 126px;
+      margin-bottom: 0;
+      align-self: stretch;
+      padding: 1.75rem 1.5rem;
     }
     .bng-list-header {
       align-items: center;
