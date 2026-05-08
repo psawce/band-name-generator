@@ -292,9 +292,9 @@ const styles = `
     background: #005dff;
     border: none;
     border-radius: 16px;
-    padding: 1.1rem 1rem;
+    padding: 1.7rem 1rem;
     margin-bottom: 0.85rem;
-    min-height: 108px;
+    min-height: 148px;
     display: flex;
     flex-direction: column;
     align-items: center;
