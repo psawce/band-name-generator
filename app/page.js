@@ -352,6 +352,9 @@ const styles = `
     .bng-header {
       margin-bottom: 1.5rem;
     }
+    .bng-title {
+      font-size: 2.15rem;
+    }
     .bng-shell {
       display: grid;
       grid-template-columns: 1fr 1fr;
