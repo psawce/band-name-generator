@@ -232,7 +232,7 @@ const SHARE_PLATFORMS = [
 
 const BLUE    = "#4d88ff";
 const BLUE_BG = "#080f1e";
-const BORDER  = "#1e3060";
+const BORDER  = "#2e4a80";
 const DIVIDER = "#121e38";
 const MUTED   = "#6888bf";
 const FAINT   = "#3d5880";
@@ -425,7 +425,7 @@ const styles = `
     font-family: inherit;
     font-size: 16px;
     padding: 12px 14px;
-    border: 1.5px solid #1e3060;
+    border: 1.5px solid #2e4a80;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
@@ -435,13 +435,13 @@ const styles = `
     min-height: 46px;
   }
   .bng-input:focus { border-color: #4d88ff; }
-  .bng-input::placeholder { color: #3d5880; }
+  .bng-input::placeholder { color: #6080a8; }
   .bng-select {
     width: 100%;
     font-family: inherit;
     font-size: 16px;
     padding: 12px 14px;
-    border: 1.5px solid #1e3060;
+    border: 1.5px solid #2e4a80;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
@@ -456,7 +456,7 @@ const styles = `
   .bng-select:focus { border-color: #4d88ff; }
   .bng-autocomplete {
     background: #0a1428;
-    border: 1.5px solid #1e3060;
+    border: 1.5px solid #2e4a80;
     border-radius: 12px;
     margin-bottom: 0.6rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
@@ -501,7 +501,7 @@ const styles = `
     padding: 7px;
     border-radius: 999px;
     background: rgba(255,255,255,0.05);
-    border: 1.5px solid #1e3060;
+    border: 1.5px solid #2e4a80;
     position: relative;
     overflow: hidden;
     touch-action: pan-y;
@@ -560,7 +560,7 @@ const styles = `
     min-width: 42px;
     min-height: 38px;
     border-radius: 999px;
-    border: 1.5px solid #1e3060;
+    border: 1.5px solid #2e4a80;
     background: rgba(255,255,255,0.05);
     color: #4a6898;
     font-family: inherit;
@@ -579,7 +579,7 @@ const styles = `
     overflow: hidden;
     border-radius: 14px;
     background: rgba(255,255,255,0.03);
-    border: 1px solid #1e3060;
+    border: 1px solid #2e4a80;
   }
   .bng-tab-strip {
     display: flex;
@@ -587,7 +587,7 @@ const styles = `
     gap: 4px;
     padding: 10px 10px 0 10px;
     background: transparent;
-    border-bottom: 1px solid #1e3060;
+    border-bottom: 1px solid #2e4a80;
   }
   .bng-tab {
     font-family: inherit;
@@ -597,7 +597,7 @@ const styles = `
     text-transform: uppercase;
     padding: 10px 18px 11px;
     margin: 0 0 -1px 0;
-    border: 1px solid #1e3060;
+    border: 1px solid #2e4a80;
     border-bottom: none;
     border-radius: 12px 12px 0 0;
     cursor: pointer;
