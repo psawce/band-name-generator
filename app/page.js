@@ -230,12 +230,12 @@ const SHARE_PLATFORMS = [
   { name: "TikTok", fn: (t) => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied! Paste into TikTok."); } },
 ];
 
-const BLUE    = "#005dff";
-const BLUE_BG = "#f4f6fc";
-const BORDER  = "#e5e5e5";
-const DIVIDER = "#f0f0f0";
-const MUTED   = "#999999";
-const FAINT   = "#aaaaaa";
+const BLUE    = "#4d88ff";
+const BLUE_BG = "#080f1e";
+const BORDER  = "#1e3060";
+const DIVIDER = "#121e38";
+const MUTED   = "#6888bf";
+const FAINT   = "#3d5880";
 
 function countWordsInBandName(name) {
   return name.trim().split(/\s+/).filter(Boolean).length;
@@ -243,7 +243,11 @@ function countWordsInBandName(name) {
 
 const styles = `
   .bng-page {
-    background: #f0f6ff;
+    background:
+      radial-gradient(ellipse 80% 55% at 15% -5%, rgba(0, 60, 200, 0.38) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 85% 105%, rgba(70, 0, 200, 0.22) 0%, transparent 60%),
+      linear-gradient(160deg, #060d20 0%, #040810 50%, #08062a 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     padding: 1.25rem 1rem 1.75rem;
     box-sizing: border-box;
@@ -264,12 +268,12 @@ const styles = `
     font-size: clamp(1.4rem, 6.8vw, 2.4rem);
     font-weight: 500;
     margin: 0 0 0.25rem;
-    color: #005dff;
+    color: #5b90ff;
     line-height: 1.1;
   }
   .bng-subtitle {
     font-size: 0.94rem;
-    color: #999999;
+    color: #4a6898;
     margin: 0;
   }
   .bng-shell {
@@ -290,8 +294,9 @@ const styles = `
     min-width: 0;
   }
   .bng-result-card {
-    background: #005dff;
-    border: none;
+    background: linear-gradient(135deg, #0d2d80 0%, #0720b0 55%, #1508a8 100%);
+    border: 1px solid rgba(100, 150, 255, 0.18);
+    box-shadow: 0 8px 40px rgba(0, 60, 255, 0.22);
     border-radius: 16px;
     padding: 1.7rem 1rem;
     margin-bottom: 0.85rem;
@@ -326,7 +331,7 @@ const styles = `
   }
   .bng-saved-name {
     font-size: 14px;
-    color: #005dff;
+    color: #4d88ff;
     min-width: 0;
     overflow-wrap: anywhere;
   }
@@ -412,7 +417,7 @@ const styles = `
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #005dff;
+    color: #4d88ff;
     margin: 0 0 0.75rem;
   }
   .bng-input {
@@ -420,51 +425,51 @@ const styles = `
     font-family: inherit;
     font-size: 16px;
     padding: 12px 14px;
-    border: 1.5px solid #e5e5e5;
+    border: 1.5px solid #1e3060;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
-    background: #fff;
-    color: #111;
+    background: rgba(255,255,255,0.05);
+    color: #e8f0ff;
     margin-bottom: 0.75rem;
     min-height: 46px;
   }
-  .bng-input:focus { border-color: #005dff; }
-  .bng-input::placeholder { color: #aaa; }
+  .bng-input:focus { border-color: #4d88ff; }
+  .bng-input::placeholder { color: #3d5880; }
   .bng-select {
     width: 100%;
     font-family: inherit;
     font-size: 16px;
     padding: 12px 14px;
-    border: 1.5px solid #e5e5e5;
+    border: 1.5px solid #1e3060;
     border-radius: 999px;
     outline: none;
     box-sizing: border-box;
-    background: #fff;
-    color: #aaa;
+    background: rgba(255,255,255,0.05);
+    color: #3d5880;
     margin-bottom: 0.75rem;
     appearance: none;
     cursor: pointer;
     min-height: 46px;
   }
-  .bng-select.has-value { color: #111; }
-  .bng-select:focus { border-color: #005dff; }
+  .bng-select.has-value { color: #e8f0ff; }
+  .bng-select:focus { border-color: #4d88ff; }
   .bng-autocomplete {
-    background: #fff;
-    border: 1.5px solid #e5e5e5;
+    background: #0a1428;
+    border: 1.5px solid #1e3060;
     border-radius: 12px;
     margin-bottom: 0.6rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   }
   .bng-autocomplete-item {
     padding: 11px 14px;
     font-size: 14px;
     cursor: pointer;
-    color: #111;
-    border-bottom: 1px solid #f0f0f0;
+    color: #c8d8f8;
+    border-bottom: 1px solid #121e38;
   }
   .bng-autocomplete-item:last-child { border-bottom: none; }
-  .bng-autocomplete-item:hover { background: #f4f6fc; color: #005dff; }
+  .bng-autocomplete-item:hover { background: rgba(255,255,255,0.06); color: #4d88ff; }
   .bng-btn-full {
     font-family: inherit;
     font-size: 14px;
@@ -485,7 +490,7 @@ const styles = `
     min-height: 56px;
   }
   .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
-  .bng-btn-outline { background: #fff; color: #005dff; border: 2px solid #005dff; }
+  .bng-btn-outline { background: rgba(255,255,255,0.05); color: #4d88ff; border: 2px solid #4d88ff; }
   .bng-mode-toggle {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -495,8 +500,8 @@ const styles = `
     margin-bottom: 0.85rem;
     padding: 7px;
     border-radius: 999px;
-    background: #fff;
-    border: 1.5px solid #e5e5e5;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid #1e3060;
     position: relative;
     overflow: hidden;
     touch-action: pan-y;
@@ -522,7 +527,7 @@ const styles = `
     border-radius: 999px;
     border: none;
     background: transparent;
-    color: #005dff;
+    color: #4a6898;
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
@@ -538,7 +543,7 @@ const styles = `
   }
   .bng-control-label {
     font-size: 12px;
-    color: #005dff;
+    color: #4d88ff;
     margin: 20px 0 8px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -555,9 +560,9 @@ const styles = `
     min-width: 42px;
     min-height: 38px;
     border-radius: 999px;
-    border: 1.5px solid #d6dcea;
-    background: #fff;
-    color: #005dff;
+    border: 1.5px solid #1e3060;
+    background: rgba(255,255,255,0.05);
+    color: #4a6898;
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
@@ -573,7 +578,8 @@ const styles = `
     padding: 0;
     overflow: hidden;
     border-radius: 14px;
-    background: #fff;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #1e3060;
   }
   .bng-tab-strip {
     display: flex;
@@ -581,7 +587,7 @@ const styles = `
     gap: 4px;
     padding: 10px 10px 0 10px;
     background: transparent;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #1e3060;
   }
   .bng-tab {
     font-family: inherit;
@@ -591,12 +597,12 @@ const styles = `
     text-transform: uppercase;
     padding: 10px 18px 11px;
     margin: 0 0 -1px 0;
-    border: 1px solid #d6dcea;
+    border: 1px solid #1e3060;
     border-bottom: none;
     border-radius: 12px 12px 0 0;
     cursor: pointer;
-    background: #fff;
-    color: #005dff;
+    background: transparent;
+    color: #4a6898;
     outline: none;
     position: relative;
     top: 1px;
@@ -957,30 +963,30 @@ export default function Home() {
                   <span style={{ fontSize: 11, fontWeight: 500, color: FAINT, letterSpacing: "0.07em", textTransform: "uppercase" }}>
                     Your list — {savedNames.length}
                   </span>
-                  <button onClick={() => setShowShare(!showShare)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                  <button onClick={() => setShowShare(!showShare)} style={pillBtn("rgba(255,255,255,0.05)", MUTED, BORDER, true)}>
                     {showShare ? "Hide" : "Share List"}
                   </button>
                 </div>
-                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#fff" }}>
+                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: "1rem", background: "#080f1e" }}>
                   {savedNames.map((name, i) => (
                     <div key={name} className="bng-saved-row" style={{ borderTop: i > 0 ? `1px solid ${DIVIDER}` : "none" }}>
                       <span className="bng-saved-name">{name}</span>
-                      <button onClick={() => removeName(name)} style={pillBtn("#fff", MUTED, BORDER, true)}>Remove</button>
+                      <button onClick={() => removeName(name)} style={pillBtn("rgba(255,255,255,0.05)", MUTED, BORDER, true)}>Remove</button>
                     </div>
                   ))}
                 </div>
                 {showShare && (
-                  <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#fff" }}>
+                  <div style={{ border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.25rem", background: "#080f1e" }}>
                     <p style={{ fontSize: 11, color: FAINT, margin: "0 0 1rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>Share via</p>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.75rem" }}>
                       {SHARE_PLATFORMS.map(p => (
-                        <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("#fff", MUTED, BORDER, true)}>
+                        <button key={p.name} onClick={() => p.fn(shareText)} style={pillBtn("rgba(255,255,255,0.05)", MUTED, BORDER, true)}>
                           {p.name}
                         </button>
                       ))}
                     </div>
                     <div style={{ borderTop: `1px solid ${DIVIDER}`, paddingTop: "0.75rem", marginTop: "0.25rem" }}>
-                      <button onClick={copyAll} style={pillBtn("#fff", BLUE, BLUE, false, true)}>
+                      <button onClick={copyAll} style={pillBtn("rgba(255,255,255,0.05)", BLUE, BLUE, false, true)}>
                         {copied ? "Copied!" : "Copy All To Clipboard"}
                       </button>
                     </div>
