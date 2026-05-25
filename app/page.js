@@ -491,6 +491,25 @@ const styles = `
   }
   .bng-btn-primary { background: #005dff; color: #fff; border: 2px solid #005dff; }
   .bng-btn-outline { background: rgba(255,255,255,0.05); color: #4d88ff; border: 2px solid #4d88ff; }
+  @keyframes bng-eq {
+    0%, 100% { transform: scaleY(0.12); }
+    50%       { transform: scaleY(1); }
+  }
+  .bng-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 56px;
+    justify-content: center;
+  }
+  .bng-eq-bar {
+    width: 6px;
+    height: 52px;
+    border-radius: 3px 3px 2px 2px;
+    background: linear-gradient(to top, rgba(255,255,255,0.45), rgba(255,255,255,0.95));
+    transform-origin: bottom center;
+    animation: bng-eq 0.75s ease-in-out infinite;
+  }
   .bng-mode-toggle {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -775,6 +794,12 @@ export default function Home() {
     setLoading(true);
     setCurrentName(null);
     setSource(null);
+    const startTime = Date.now();
+    const minDelay = () => {
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, 3000 - elapsed);
+      return remaining > 0 ? new Promise(r => setTimeout(r, remaining)) : Promise.resolve();
+    };
     try {
       const seed = RANDOM_SEEDS[Math.floor(Math.random() * RANDOM_SEEDS.length)];
       const avoidList = aiHistory.slice(-10).join(", ");
@@ -792,10 +817,12 @@ export default function Home() {
       });
       const data = await res.json();
       const name = data.text?.trim() || "Unknown Band";
+      await minDelay();
       setCurrentName(name);
       setAiHistory(prev => [...prev, name]);
       setSource("ai");
     } catch {
+      await minDelay();
       setCurrentName("Error — try again");
     }
     setLoading(false);
@@ -837,7 +864,19 @@ export default function Home() {
             <div className="bng-block bng-block--result">
               <div className="bng-result bng-result-card">
                 {loading ? (
-                  <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>Generating...</p>
+                  <div className="bng-eq" aria-label="Generating...">
+                    {[
+                      { dur: "0.80s", del: "0.00s" },
+                      { dur: "0.65s", del: "0.10s" },
+                      { dur: "0.90s", del: "0.22s" },
+                      { dur: "0.70s", del: "0.05s" },
+                      { dur: "0.85s", del: "0.16s" },
+                      { dur: "0.60s", del: "0.28s" },
+                      { dur: "0.75s", del: "0.08s" },
+                    ].map((b, i) => (
+                      <div key={i} className="bng-eq-bar" style={{ animationDuration: b.dur, animationDelay: b.del }} />
+                    ))}
+                  </div>
                 ) : currentName ? (
                   <>
                     <span style={{ fontSize: 24, fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>{currentName}</span>
